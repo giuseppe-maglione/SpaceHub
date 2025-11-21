@@ -1,27 +1,18 @@
-const path = require("path");
-const auth = require("../controllers/authController");
-
 module.exports = function(app) {
+    const auth = require("../controllers/authController");
+    const main = require("../controllers/mainController");
 
     app.route("/")
-        .get((req, res) => {
-            res.sendFile(path.join(__dirname, "../public/index.html"));
-        });
+        .get(main.index)
 
     // Pagine pubbliche
     app.route("/aule-disponibili")
-        .get((req, res) => {
-            res.sendFile(path.join(__dirname, "../public/aule-disponibili.html"));
-        });
+        .get(main.auleDisponibiliPage)
 
     // Pagine solo per utenti loggati
     app.route("/crea-prenotazione")
-        .get(auth.requireLogin, (req, res) => {
-            res.sendFile(path.join(__dirname, "../public/crea-prenotazione.html"));
-        });
+        .get(auth.requireLogin, main.creaPrenotazionePage)
 
     app.route("/gestisci-prenotazione")
-        .get(auth.requireLogin, (req, res) => {
-            res.sendFile(path.join(__dirname, "../public/gestisci-prenotazione.html"));
-        });
+        .get(auth.requireLogin, main.gestisciPrenotazionePage)
 };

@@ -1,26 +1,30 @@
 const bcrypt = require("bcrypt");
 
 // Esempio: questo user verrebbe dal database
-const fakeUser = {
+const fakeUser = [{
     id: 1,
     username: "admin",
     passwordHash: "$2b$10$uP/NT.3OER3wXXeN6fPjeOdiB2r2AuP8WH9fMck/4cM/rzYXRTxQW" // "password"
-};
+}];
 
 // LOGIN
 exports.login = async (req, res) => {
     const { username, password } = req.body;
 
-    if (username !== fakeUser.username)
+    // 1. Cerca l'utente
+    const user = fakeUser.find(u => u.username === username);
+    if (!user) {
         return res.status(401).json({ error: "Username errato" });
+    }
 
-    const correct = await bcrypt.compare(password, fakeUser.passwordHash);
-
-    if (!correct)
+    // 2. Confronta la password
+    const correct = await bcrypt.compare(password, user.passwordHash);
+    if (!correct) {
         return res.status(401).json({ error: "Password errata" });
+    }
 
     // Salviamo nella sessione
-    req.session.userId = fakeUser.id;
+    req.session.userId = user.id;
 
     res.json({ message: "Login effettuato" });
 };
