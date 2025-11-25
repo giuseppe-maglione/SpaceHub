@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
 
     async function checkAuth() {
-        const res = await apiGet("/api/me");
+        const res = await apiGet("/auth/me");
         if (res.loggedIn) setUser(res.user);
     }
 

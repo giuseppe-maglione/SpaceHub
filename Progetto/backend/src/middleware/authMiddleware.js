@@ -68,3 +68,17 @@ export const requireLogin = (req, res, next) => {
     }
     return res.status(401).json({ error: "Devi essere loggato" });
 };
+
+// CHECK IF LOGGED
+export const checkLogged = (req, res) => {
+    if (!req.session.userId) {
+        return res.json({ loggedIn: false });
+    }
+
+    res.json({
+        loggedIn: true,
+        user: {
+            id: req.session.userId
+        }
+    });
+};

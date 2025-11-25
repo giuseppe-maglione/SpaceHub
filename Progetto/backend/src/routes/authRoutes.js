@@ -1,7 +1,8 @@
 module.exports = function (app) {
     const auth = require("../middleware/authMiddleware");
 
-    app.post("/api/login", auth.login);
-    app.post("/api/logout", auth.logout);
-    app.post("/api/register", auth.register);
+    app.post("/auth/login", auth.login);
+    app.post("/auth/logout", auth.logout);
+    app.post("/auth/register", auth.register);
+    app.get("/auth/me", auth.checkLogged);
 };
