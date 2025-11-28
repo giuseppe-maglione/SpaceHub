@@ -1,4 +1,4 @@
-import { pool } from "../services/db.js";
+import * as pool from "../services/db.js";
 
 export const bookingModel = {
 

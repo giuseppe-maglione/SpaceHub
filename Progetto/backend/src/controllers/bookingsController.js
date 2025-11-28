@@ -1,5 +1,5 @@
-import { bookingModel } from "../models/bookingModel.js";
-import { roomModel } from "../models/roomModel.js";
+import * as bookingModel from "../models/bookingModel.js";
+import * as roomModel from "../models/roomModel.js";
 
 // LISTA AULE -  da rivedere l'overlap
 export const listRooms = async (req, res) => {

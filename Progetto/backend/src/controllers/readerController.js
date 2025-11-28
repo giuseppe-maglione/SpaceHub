@@ -1,3 +1,4 @@
+/*
 import { cardModel } from "../models/cardModel.js";
 import { readerModel } from "../models/readerModel.js";
 import { bookingModel } from "../models/bookingModel.js";
@@ -58,4 +59,4 @@ export const checkData = async (req, res) => {
     return res.status(500).json({ access: false, message: "Errore interno server" });
   }
 };
-
+*/

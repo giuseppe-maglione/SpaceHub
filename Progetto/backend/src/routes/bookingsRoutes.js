@@ -1,7 +1,7 @@
-module.exports = function (app) {
-    const auth = require("../middleware/authMiddleware");
-    const bookings = require("../controllers/bookingsController");
+import * as auth from "../middleware/authMiddleware.js";
+import * as bookings from "../controllers/bookingsController.js";
 
+export default function bookingsRoutes(app) {
     // LISTA AULE
     app.route("/api/aule-disponibili")
         .get(bookings.listRooms);

@@ -16,6 +16,12 @@ const [start, setStart] = useState("");
             return;
         }
 
+        const formattedStart = data.start.substring(0, 16).replace(' ', 'T');
+        const formattedEnd = data.end.substring(0, 16).replace(' ', 'T');
+
+        setStart(formattedStart); 
+        setEnd(formattedEnd); 
+
         try {
             const res = await apiGet(
                 `/api/aule-disponibili?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`

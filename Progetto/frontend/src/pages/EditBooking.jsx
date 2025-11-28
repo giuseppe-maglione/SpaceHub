@@ -22,6 +22,14 @@ export default function EditBooking() {
       });
   }, []);
 
+  // conversione formato data per compatibilità backend
+  // rimuove i secondi e sostituisce lo spazio con 'T'
+  const formattedStart = data.start_time.substring(0, 16).replace(' ', 'T');
+  const formattedEnd = data.end_time.substring(0, 16).replace(' ', 'T');
+
+  setStartTime(formattedStart); 
+  setEndTime(formattedEnd); 
+
   // funzione che gestisce l'invio delle modifiche al server
   const handleUpdate = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
-module.exports = function (app) {
-    const auth = require("../middleware/authMiddleware");
+import * as auth from "../middleware/authMiddleware.js";
 
+export default function authRoutes(app) {
     app.post("/auth/login", auth.login);
     app.post("/auth/logout", auth.logout);
     app.post("/auth/register", auth.register);
