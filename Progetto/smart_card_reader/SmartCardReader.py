@@ -133,3 +133,27 @@ class SmartCardReader:
             print(f"[ERROR] writing block {block} failed. status: {hex(sw1)}{hex(sw2).lstrip('0x').zfill(2).upper()}")
 
         return status_ok
+    
+    def signal_success(self):
+        """green led and short beep (ok)."""
+        if not self.connection:
+            return
+        
+        apdu = [0xFF, 0x00, 0x40, 0x00, 0x04, 0x02, 0x00, 0x01, 0x01]
+        
+        try:
+            self.connection.transmit(apdu)
+        except Exception as e:
+            print(f"[WARNING] failed to control led/buzzer: {e}")
+
+    def signal_error(self):
+        """red led and long beep (error)."""
+        if not self.connection:
+            return
+        
+        apdu = [0xFF, 0x00, 0x40, 0x00, 0x04, 0x01, 0x00, 0x01, 0x01]
+        
+        try:
+            self.connection.transmit(apdu)
+        except Exception as e:
+            print(f"[WARNING] failed to control led/buzzer: {e}")

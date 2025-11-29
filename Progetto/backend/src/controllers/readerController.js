@@ -1,42 +1,66 @@
-/*
+import fs from 'fs';
+import path from 'path';
 import { cardModel } from "../models/cardModel.js";
 import { readerModel } from "../models/readerModel.js";
 import { bookingModel } from "../models/bookingModel.js";
 import { logModel } from "../models/logModel.js";
+import { verifySignature, signData } from "../utils/cryptoUtils.js";
 
-// supponiamo che tu abbia una funzione verifySignature(data, signature, publicKey)
-import { verifySignature } from "../utils/cryptoUtils.js";
+// caricamento della chiave privata del server
+const SERVER_PRIVATE_KEY_PATH = process.env.SERVER_PRIVATE_KEY_PATH || path.resolve('keys', 'server_private.pem');
+let SERVER_PRIVATE_KEY;
 
-export const checkData = async (req, res) => {
+try {
+    SERVER_PRIVATE_KEY = fs.readFileSync(SERVER_PRIVATE_KEY_PATH, 'utf8');
+} catch (e) {
+    console.error("ERRORE CRITICO: Impossibile caricare la chiave privata del server!", e.message);
+}
+
+export const checkAccess = async (req, res) => {
+
+  // definizione funzione per prendere i dati, firmarli e inviarli al reader
+  const sendSignedResponse = (statusCode, payload) => {
+      try {
+          // firma i dati usando la chiave privata del server
+          const signature = signData(payload, SERVER_PRIVATE_KEY);
+          // invia JSON con dati + firma
+          return res.status(statusCode).json({ ...payload, signature });
+      } catch (err) {
+          console.error("Errore durante la firma della risposta:", err);
+          return res.status(500).json({ error: "Errore firma server" });
+      }
+  };
+
   try {
     const { card_uid, reader_uid, signature } = req.body;
 
+    // check sui dati
     if (!card_uid || !reader_uid || !signature) {
       return res.status(400).json({ error: "Dati mancanti" });
     }
 
-    // 1. Recupera la card
+    // 1. recupera la card
     const card = await cardModel.getCardByUID(card_uid);
     if (!card || !card.active) {
       await logModel.createLog(null, reader_uid, false, "Card non valida o inattiva");
-      return res.status(401).json({ access: false, message: "Card non valida" });
+      return sendSignedResponse(401, { access: false, message: "Card non valida" });
     }
 
-    // 2. Recupera il reader
+    // 2. recupera il reader
     const reader = await readerModel.getReaderByUID(reader_uid);
     if (!reader || !reader.is_active) {
       await logModel.createLog(card.id, null, false, "Reader non valido o inattivo");
-      return res.status(401).json({ access: false, message: "Reader non valido" });
+      return sendSignedResponse(401, { access: false, message: "Reader non valido" });
     }
 
-    // 3. Verifica firma
+    // 3. verifica firma (autenticità del reader)
     const validSignature = verifySignature({ card_uid, reader_uid }, signature, reader.public_key);
     if (!validSignature) {
       await logModel.createLog(card.id, reader.id, false, "Firma non valida");
-      return res.status(401).json({ access: false, message: "Firma non valida" });
+      return sendSignedResponse(401, { access: false, message: "Firma non valida" });
     }
 
-    // 4. Controlla prenotazione attiva per la stanza
+    // 4. controlla prenotazione attiva per la stanza (autorizzazione)
     const now = new Date();
     const booking = await bookingModel.getActiveBookingForUserInRoom(
       card.user_id,
@@ -46,17 +70,15 @@ export const checkData = async (req, res) => {
 
     if (!booking) {
       await logModel.createLog(card.id, reader.id, false, "Nessuna prenotazione attiva");
-      return res.status(403).json({ access: false, message: "Nessuna prenotazione valida in questo momento" });
+      return sendSignedResponse(403, { access: false, message: "Nessuna prenotazione valida ora" });
     }
 
     // 5. Accesso consentito
     await logModel.createLog(card.id, reader.id, true, "Accesso autorizzato");
-
-    return res.json({ access: true, message: "Accesso autorizzato" });
+    return sendSignedResponse(200, { access: true, message: "Accesso autorizzato" });
 
   } catch (err) {
-    console.error("Errore in checkData:", err);
+    console.error("Errore in checkAccess:", err);
     return res.status(500).json({ access: false, message: "Errore interno server" });
   }
 };
-*/

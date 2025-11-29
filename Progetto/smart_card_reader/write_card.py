@@ -1,3 +1,5 @@
+import argparse
+import os
 from SmartCardReader import SmartCardReader
 
 BLOCK = 4
@@ -6,7 +8,40 @@ KEY_SLOT = 0
 CARDS = ['CARD-GIU-001', 'CARD-NARI-001']
 data_to_write = CARDS[0].encode("utf-8").ljust(16, b"\x00")
 
+def get_data_to_write():
+    # setup parser
+    parser = argparse.ArgumentParser(
+        description="write a specific Card ID to a smart card block.",
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    
+    parser.add_argument(
+        '--data', 
+        type=str,
+        default='0',
+        help="""[HELP] card ID to write. can be:
+- '0': use CARD-NARI-001 (default)
+- '1': use CARD-GIU-001 (default)
+- custom string: write the exact provided string."""
+    )
+    
+    args = parser.parse_args()
+    arg_value = args.data
+
+    if arg_value == '0':
+        card_id = CARDS[0]
+    elif arg_value == '1':
+        card_id = CARDS[1]
+    else:
+        card_id = arg_value
+        
+    print(f"[INFO] data selected: {card_id}")
+    return card_id.encode("utf-8").ljust(16, b"\x00")
+
 if __name__ == "__main__":
+
+    data_to_write = get_data_to_write()
+
     try:
         with SmartCardReader(key_a=KEY_A, key_slot=KEY_SLOT) as reader:     # 'with' ensure disconnection
             

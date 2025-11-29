@@ -1,7 +1,7 @@
 import * as bookingModel from "../models/bookingModel.js";
 import * as roomModel from "../models/roomModel.js";
 
-// LISTA AULE -  da rivedere l'overlap
+// LISTA AULE
 export const listRooms = async (req, res) => {
   try {
     // Accetta query params: start, end (ISO 8601)
