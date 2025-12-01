@@ -1,6 +1,6 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
-export const bookingModel = {
+export const roomModel = {
 
     async getAllRooms() {
         const [rows] = await pool.query("SELECT * FROM rooms ORDER BY name");

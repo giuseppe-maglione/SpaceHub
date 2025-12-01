@@ -1,6 +1,6 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
-export const UserModel = {
+export const userModel = {
 
     async findByUsername(username) {
         const [rows] = await pool.query(

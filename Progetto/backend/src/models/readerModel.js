@@ -1,6 +1,6 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
-export const ReaderModel = {
+export const readerModel = {
 
     async getReaderByUID(reader_uid) {
         const [rows] = await pool.query(

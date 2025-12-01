@@ -1,9 +1,9 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
 export const bookingModel = {
 
     async getActiveBookingForUserInRoom(userId, roomId, dateTime) {
-        const [rows] = await db.query(
+        const [rows] = await pool.query(
         `SELECT * FROM bookings
         WHERE user_id = ?
             AND room_id = ?
@@ -16,8 +16,8 @@ export const bookingModel = {
 
     async createBooking(userId, roomId, startTime, endTime) {
         const [result] = await pool.query(
-            `INSERT INTO bookings (user_id, room_id, start_time, end_time)
-             VALUES (?, ?, ?, ?)`,
+            `INSERT INTO bookings (user_id, room_id, start_time, end_time, status)
+             VALUES (?, ?, ?, ?, 'active')`,
             [userId, roomId, startTime, endTime]
         );
 
@@ -32,6 +32,16 @@ export const bookingModel = {
              WHERE b.user_id = ?
              ORDER BY b.start_time`,
             [userId]
+        );
+        return rows;
+    },
+
+    async getActiveBookingsByUser(userId) {
+        const [rows] = await pool.query(
+        `SELECT * FROM bookings
+        WHERE status = 'active'
+            AND user_id = ?`,
+        [userId]
         );
         return rows;
     },

@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
-import dotenv from "dotenv";
-dotenv.config();
+
 
 let pool;
 
@@ -28,3 +27,5 @@ export async function query(sql, params) {
   const [rows] = await p.execute(sql, params);
   return rows;
 }
+
+export { pool };

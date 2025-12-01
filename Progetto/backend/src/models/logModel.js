@@ -1,6 +1,6 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
-export const AccessLogModel = {
+export const logModel = {
 
     async createLog(cardId, readerId, accessGranted, message) {
         await pool.query(

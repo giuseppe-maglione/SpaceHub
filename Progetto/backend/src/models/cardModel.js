@@ -1,6 +1,6 @@
-import * as pool from "../services/db.js";
+import {pool} from "../services/db.js";
 
-export const CardModel = {
+export const cardModel = {
 
     async getCardByUID(card_uid) {
         const [rows] = await pool.query(
