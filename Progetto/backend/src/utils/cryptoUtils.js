@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-// helper per ordinare le chiavi dell'oggetto in profondità
+// helper to sort object data
 function sortObjectKeys(obj) {
     if (typeof obj !== 'object' || obj === null) {
         return obj;
@@ -20,7 +20,7 @@ function getCanonicalString(data) {
     return JSON.stringify(sortedData); // nessuno spazio tra i separatori
 }
 
-// verifica una firma digitale usando la chiave pubblica del reader.
+// verify digital signature using reader public key
 export function verifySignature(data, signature, publicKey) {
     try {
         // 1. usa la stessa canonizzazione usata per la firma
@@ -43,7 +43,7 @@ export function verifySignature(data, signature, publicKey) {
     }
 }
 
-// firma un oggetto dati usando la chiave privata del server.
+// sign data using server private key
 export function signData(data, privateKeyPem) {
     try {
         // 1. usa la stessa canonizzazione usata per la firma

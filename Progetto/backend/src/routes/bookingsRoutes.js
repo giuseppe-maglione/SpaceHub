@@ -2,27 +2,22 @@ import * as auth from "../middleware/authMiddleware.js";
 import * as bookings from "../controllers/bookingsController.js";
 
 export default function bookingsRoutes(app) {
-    // LISTA AULE
+    // lista aule
     app.route("/api/aule-disponibili")
         .get(bookings.listRooms);
-
-    // CREA PRENOTAZIONE
+    // crea prenotazione
     app.route("/api/crea-prenotazione")
         .post(auth.requireLogin, bookings.createBooking);
-
-    // LISTA PRENOTAZIONI UTENTE
+    // recupera tutte le prenotazioni utente
     app.route("/api/prenotazioni")
         .get(auth.requireLogin, bookings.getUserBookings);
-
-    // PRENOTAZIONE DELL'UTENTE
+    // recupera una prenotazione utente
     app.route("/api/prenotazioni/:id")
         .get(auth.requireLogin, bookings.getUserBookingById);
-
-    // MODIFICA PRENOTAZIONE
+    // modifica prenotazione
     app.route("/api/prenotazioni/:id")
         .put(auth.requireLogin, bookings.updateBooking);
-
-    // ELIMINA PRENOTAZIONE
+    // elimina prenotazione
     app.route("/api/prenotazioni/:id")
         .delete(auth.requireLogin, bookings.deleteBooking);
 };

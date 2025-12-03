@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiGet } from "../api";
-import "./style/Rooms.css"; 
+import "../style/Rooms.css"; 
 
 export default function Rooms() {
     const nav = useNavigate();
 
-    // STATI SEPARATI PER DATA E ORA
+    // adesso l'utente inserisce prima la data e poi gli orari di inizio e fine
+    // quindi utilizziamo degli stati separati per data e ora
     const [selectedDate, setSelectedDate] = useState("");
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
     
-    const [rooms, setRooms] = useState([]);
+    const [rooms, setRooms] = useState([]);     // array per contenere l'elenco delle aule restituite dal backend
     const [error, setError] = useState("");
     const [searched, setSearched] = useState(false);
 
@@ -19,21 +20,20 @@ export default function Rooms() {
         setError("");
         setSearched(true); // Imposta che abbiamo provato a cercare
 
-        // 1. Validazione Campi Vuoti
+        // validazione anche su frontend
         if (!selectedDate || !startTime || !endTime) {
             setError("Inserisci la data e gli orari di inizio e fine.");
             return;
         }
 
-        // 2. NUOVA VALIDAZIONE: Controllo coerenza orari
-        // Essendo stringhe "HH:MM", possiamo confrontarle direttamente
+        // controllo coerenza orari
         if (startTime >= endTime) {
             setError("L'orario di inizio deve essere precedente all'orario di fine.");
-            setRooms([]); // Pulisce eventuali risultati precedenti per evitare confusione
+            setRooms([]); // pulisce eventuali risultati precedenti
             return;
         }
 
-        // Combinazione stringhe per creare il formato datetime-local (YYYY-MM-DDTHH:MM)
+        // combinazione stringhe per creare il formato corretto (YYYY-MM-DDTHH:MM)
         const startFull = `${selectedDate}T${startTime}`;
         const endFull = `${selectedDate}T${endTime}`;
 
@@ -42,9 +42,8 @@ export default function Rooms() {
                 `/api/aule-disponibili?start=${encodeURIComponent(startFull)}&end=${encodeURIComponent(endFull)}`
             );
             
-            const fetchedRooms = res.rooms || [];
-            // Ordina array in base all'ID
-            fetchedRooms.sort((a, b) => a.id - b.id);
+            const fetchedRooms = res.rooms || [];           // agguirna lo stato di rooms con l'elenco di aule restituito
+            fetchedRooms.sort((a, b) => a.id - b.id);       // ordina array in base all'id
             
             setRooms(fetchedRooms);
         } catch (err) {
@@ -53,10 +52,12 @@ export default function Rooms() {
         }
     }
 
+    // funzione per gestire il click su "Prenota"
     const handleBookClick = (roomId) => {
         const startFull = `${selectedDate}T${startTime}`;
         const endFull = `${selectedDate}T${endTime}`;
 
+        // naviga verso la pagina di creazione passando i dati nello 'state'
         nav("/create-booking", {
             state: {
                 preSelectedRoom: roomId,
@@ -66,7 +67,7 @@ export default function Rooms() {
         });
     };
 
-    // Helper per i colori
+    // helper per i colori
     const getCardGradient = (index) => {
         const gradients = [
             "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", // Blue
@@ -91,7 +92,7 @@ export default function Rooms() {
                 
                 <div className="search-form">
                     
-                    {/* 1. INPUT DATA */}
+                    {/* input data */}
                     <div className="input-group">
                         <label>📅 Seleziona Data</label>
                         <input
@@ -102,7 +103,7 @@ export default function Rooms() {
                         />
                     </div>
 
-                    {/* 2. INPUT ORA INIZIO */}
+                    {/* input ora inizio */}
                     <div className="input-group">
                         <label>🕒 Ora Inizio</label>
                         <input
@@ -113,7 +114,7 @@ export default function Rooms() {
                         />
                     </div>
 
-                    {/* 3. INPUT ORA FINE */}
+                    {/* input ora fine */}
                     <div className="input-group">
                         <label>🕒 Ora Fine</label>
                         <input
@@ -124,13 +125,13 @@ export default function Rooms() {
                         />
                     </div>
 
-                    {/* Bottone Cerca */}
+                    {/* bottone cerca */}
                     <button onClick={loadRooms} className="search-button">
                         Cerca Aule
                     </button>
                 </div>
 
-                {/* Messaggio di Errore (Rosso) */}
+                {/* messaggio di errore (rosso) */}
                 {error && <p className="error-msg">{error}</p>}
             </div>
 

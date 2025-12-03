@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { apiPost } from "../api";
-import "./style/CreateBooking.css"; // Importa lo stile
+import "../style/CreateBooking.css";
 
 export default function CreateBooking() {
   const nav = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();   // hook per leggere i dati passati eventualmente da Rooms.jsx (state)
 
   const { preSelectedRoom, preSelectedStart, preSelectedEnd } = location.state || {};
-
+  // usa i dati precompilati come valori iniziali, altrimenti stringhe vuote
   const [roomId, setRoomId] = useState(preSelectedRoom || "");
   const [startTime, setStartTime] = useState(preSelectedStart || "");
   const [endTime, setEndTime] = useState(preSelectedEnd || "");
 
-  const [errorMsg, setErrorMsg] = useState("");   
-  const [successMsg, setSuccessMsg] = useState(""); 
+  const [errorMsg, setErrorMsg] = useState("");         // messaggio rosso (errore)
+  const [successMsg, setSuccessMsg] = useState("");     // messaggio verde (successo)
 
+  // funzione che gestisce l'invio dei dati del form al backend 
   const handleCreate = async (e) => {
     e.preventDefault();
 
+    // reset messaggi precedenti
     setErrorMsg("");
     setSuccessMsg("");
 
@@ -30,8 +32,9 @@ export default function CreateBooking() {
         return;
       }
 
+      // successo
       setSuccessMsg("Prenotazione creata con successo! Reindirizzamento...");
-      
+      // attesa di 2 secondi e reindirizzamento
       setTimeout(() => {
         nav("/my-bookings"); 
       }, 2000);
@@ -60,7 +63,7 @@ export default function CreateBooking() {
                 onChange={(e) => setRoomId(e.target.value)}
                 required
                 placeholder="Es. 101"
-                // Se preSelectedRoom esiste, blocchiamo la modifica per comodità
+                // se preSelectedRoom esiste, blocchiamo la modifica per comodità
                 readOnly={!!preSelectedRoom} 
             />
           </div>
@@ -92,7 +95,7 @@ export default function CreateBooking() {
           </button>
         </form>
 
-        {/* Box Messaggi */}
+        {/* box messaggi */}
         {errorMsg && (
             <div className="msg-box error">
                 ⚠️ {errorMsg}

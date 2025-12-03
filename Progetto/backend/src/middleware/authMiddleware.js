@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
 import {userModel} from "../models/userModel.js";
 
-// LOGIN
+// const saltRounds = 10;        // good for testing (not secure)
+// const saltRounds = 12;        // good for production
+
+// --- LOGIN
 export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -35,7 +38,7 @@ export const login = async (req, res) => {
 };
 
 
-// REGISTER
+// --- REGISTER
 export const register = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -59,7 +62,7 @@ export const register = async (req, res) => {
     }
 };
 
-// LOGOUT
+// --- LOGOUT
 export const logout = (req, res) => {
     req.session.destroy(err => {
         if (err) return res.status(500).json({ error: "Errore nel logout" });
@@ -68,7 +71,7 @@ export const logout = (req, res) => {
     });
 };
 
-// MIDDLEWARE
+// --- RICHIEDI LOGIN (PER PAGINE PROTETTE)
 export const requireLogin = (req, res, next) => {
     if (req.session.userId) return next();
 
@@ -79,7 +82,7 @@ export const requireLogin = (req, res, next) => {
     return res.status(401).json({ error: "Devi essere loggato" });
 };
 
-// CHECK IF LOGGED
+// --- CHECK IF LOGGED
 export const checkLogged = async (req, res) => {
     if (!req.session.userId) {
         return res.json({ loggedIn: false });
@@ -87,7 +90,7 @@ export const checkLogged = async (req, res) => {
 
     const user = await userModel.findById(req.session.userId);
         
-    // Se la sessione esiste ma l'utente è stato cancellato dal DB
+    // se la sessione esiste ma l'utente è stato cancellato dal db
     if (!user) {
         req.session.destroy();
         return res.json({ loggedIn: false });

@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Aggiunto Link
-import "./style/Auth.css"; // Riutilizziamo lo stesso CSS del Login
+import { useNavigate, Link } from "react-router-dom";
+import "../style/Auth.css";
 
 export default function Register() {
     const { register } = useAuth();
@@ -22,7 +22,7 @@ export default function Register() {
         if (res.error) {
             setError(res.error);
         } else {
-            // Altrimenti si viene reindirizzati alla home
+            // reindirizzata alla home
             navigate("/");
         }
     }
@@ -35,7 +35,7 @@ export default function Register() {
                 
                 <form onSubmit={handleSubmit} className="auth-form">
                     
-                    {/* Input Username */}
+                    {/* input username */}
                     <div className="input-group">
                         <label htmlFor="reg-username">Username</label>
                         <input 
@@ -48,7 +48,7 @@ export default function Register() {
                         />
                     </div>
                     
-                    {/* Input Password */}
+                    {/* input password */}
                     <div className="input-group">
                         <label htmlFor="reg-password">Password</label>
                         <input 
@@ -64,7 +64,7 @@ export default function Register() {
                     
                     <button type="submit" className="auth-button">Registrati</button>
 
-                    {/* Messaggio Errore */}
+                    {/* messaggio errore */}
                     {error && (
                         <div className="auth-error">
                             ⚠️ {error}
@@ -72,7 +72,7 @@ export default function Register() {
                     )}
                 </form>
 
-                {/* Footer con link al Login */}
+                {/* footer con link al login */}
                 <div className="auth-footer">
                     Hai già un account? <Link to="/login" className="auth-link">Accedi qui</Link>
                 </div>

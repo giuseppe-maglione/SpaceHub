@@ -4,6 +4,7 @@ import os
 from crypto_utils_reader import *
 from dotenv import load_dotenv
 from SmartCardReader import SmartCardReader
+import urllib3
 
 # --- ENV CONFIG ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,10 +14,11 @@ if not loaded:
     print(f"[WARNING] could not load .env from path: {os.path.abspath(dotenv_path)}")
 else:
     print(f"[INFO] .env uploaded successfully from path: {os.path.abspath(dotenv_path)}")
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:3000/api/check-access")
+
+BACKEND_URL = os.getenv("BACKEND_URL", "https://localhost:3000/api/check-access")
 READER_UID = os.getenv("READER_UID", "READER001")
-READER_PRIVATE_KEY_PATH = os.getenv("READER_PRIVATE_KEY", "reader_private.pem")
-SERVER_PUBLIC_KEY_PATH = os.getenv("SERVER_PUBLIC_KEY", "server_public.pem")
+READER_PRIVATE_KEY_PATH = os.getenv("READER_PRIVATE_KEY", "/keys/reader_private.pem")
+SERVER_PUBLIC_KEY_PATH = os.getenv("SERVER_PUBLIC_KEY", "/keys/server_public.pem")
 
 # --- SMART CARD READER CONFIG ---
 KEY_A = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
@@ -30,6 +32,7 @@ def main_loop():
     print(f"target backend: {BACKEND_URL}")
     print("-----------------------------------------------")
     
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)       # disable "not secure request" warning
     reader_private_key = load_reader_private_key(READER_PRIVATE_KEY_PATH)
     server_public_key = load_server_public_key(SERVER_PUBLIC_KEY_PATH)
     last_card_uid = None
@@ -65,8 +68,8 @@ def main_loop():
                         # 4. send request
                         print("[NETWORK] sending POST request to the backend API...")
                         try:
-                            res = requests.post(BACKEND_URL, json=full_body, timeout=2)
-                            
+                            res = requests.post(BACKEND_URL, json=full_body, timeout=2, verify=False)   # verify=False to ignore SSL certificate verification
+                                                                                                        # because the certificate is self-signed
                             if res.status_code in [200, 401, 403]:
                                 response_data = res.json()
                                 

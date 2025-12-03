@@ -1,19 +1,17 @@
--- schema.sql
+-- scheme.sql
+-- database scheme definition file
 
--- ===============================
 --  USERS
--- ===============================
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    -- TBD: aggiungere altre informazioni (Nome, Cognome, Età, Sesso, ecc)
 );
 
--- ===============================
---  ROOMS (aule)
--- ===============================
+--  ROOMS
 CREATE TABLE IF NOT EXISTS rooms (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -21,9 +19,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     capacity INT DEFAULT 0
 );
 
--- ===============================
---  READERS (lettori fisici collegati alle aule)
--- ===============================
+--  SMART CARD READERS
 CREATE TABLE IF NOT EXISTS readers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT,
@@ -33,9 +29,7 @@ CREATE TABLE IF NOT EXISTS readers (
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE SET NULL
 );
 
--- ===============================
 --  CARDS (badge utenti)
--- ===============================
 CREATE TABLE IF NOT EXISTS cards (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -45,9 +39,7 @@ CREATE TABLE IF NOT EXISTS cards (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- ===============================
---  BOOKINGS (prenotazioni)
--- ===============================
+--  BOOKINGS
 CREATE TABLE IF NOT EXISTS bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -56,6 +48,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     end_time DATETIME NOT NULL,
     status ENUM('active', 'cancelled') DEFAULT 'active',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    -- TBD: aggiungere il flag "conference", per fare lo streaming della riunione
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
 );
@@ -63,9 +56,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 CREATE INDEX IF NOT EXISTS idx_booking_room_time
     ON bookings (room_id, start_time, end_time);
 
--- ===============================
 --  ACCESS LOGS
--- ===============================
 CREATE TABLE IF NOT EXISTS access_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     card_id INT,

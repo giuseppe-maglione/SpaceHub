@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiGet, apiPut } from "../api";
-import "./style/CreateBooking.css"; // Riutilizziamo lo stile di creazione
+import "../style/CreateBooking.css";
 
 export default function EditBooking() {
   const { id } = useParams();
@@ -11,9 +11,12 @@ export default function EditBooking() {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const [errorMsg, setErrorMsg] = useState("");   
-  const [successMsg, setSuccessMsg] = useState(""); 
+  const [errorMsg, setErrorMsg] = useState("");         // messaggio rosso (errore)
+  const [successMsg, setSuccessMsg] = useState("");     // messaggio verde (successo)
    
+  // carica i dati della prenotazione originale
+  // nota teorica: useEffect() è un hook che serve a dire a react: 
+  // "appena hai finito di renderizzare la pagina, esegui questo codice automaticamentente".
   useEffect(() => {
     async function loadData() {
       try {
@@ -23,6 +26,7 @@ export default function EditBooking() {
         if (data) {
           setBooking(data);
           
+          // conversione formato data per compatibilità con backend
           if (data.start_time) {
              setStartTime(data.start_time.substring(0, 16).replace(' ', 'T'));
           }
@@ -36,26 +40,38 @@ export default function EditBooking() {
       }
     }
     loadData();
-  }, [id]);
+  }, [id]);   // si riattiva se cambia l'id
 
+  // funzione che gestisce l'invio delle modifiche backend 
   const handleUpdate = async (e) => {
     e.preventDefault();
     
+    // reset messaggi precedenti
     setErrorMsg("");
     setSuccessMsg("");
 
-    const res = await apiPut(`/api/prenotazioni/${id}`, { startTime, endTime });
-
-    if (res.error) {
-      setErrorMsg(res.error);
-    } else {
-      setSuccessMsg("Modifica salvata con successo! Reindirizzamento...");      
+    try {
+      const data = await apiPut(`/api/prenotazioni/${id}`, { startTime, endTime });
+  
+      if (data.error) {
+        setErrorMsg(data.error || "Errore sconosciuto");
+        return;
+      }
+  
+      // successo
+      setSuccessMsg("Modifica salvata con successo! Reindirizzamento...");
+      // attesa di 2 secondi e reindirizzamento
       setTimeout(() => {
-        nav("/my-bookings");
+        nav("/my-bookings"); 
       }, 2000);
+
+    } catch (err) {
+      console.error(err);
+      setErrorMsg("Errore di connessione al server.");
     }
   };
 
+  // mostra un messaggio di caricamento finché lo stato booking non viene popolat
   if (!booking && !errorMsg) {
       return (
         <div className="create-page">
@@ -113,7 +129,7 @@ export default function EditBooking() {
 
         </form>
 
-        {/* Box Messaggi */}
+        {/* box messaggi */}
         {errorMsg && (
             <div className="msg-box error">
                 ⚠️ {errorMsg}

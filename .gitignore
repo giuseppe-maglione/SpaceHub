@@ -1,0 +1,11 @@
+.env
+
+/Progetto/backend/certs/*
+/Progetto/backend/keys/*
+
+/Progetto/database/usage.txt
+/Progetto/database/init.sql
+
+/Progetto/smart_card_reader/keys/*
+/Progetto/smart_card_reader/reader-venv/*
+/Progetto/smart_card_reader/__pycache__

@@ -16,6 +16,7 @@ try {
     console.error("ERRORE CRITICO: Impossibile caricare la chiave privata del server!", e.message);
 }
 
+// --- CONTROLLA ACCESSO
 export const checkAccess = async (req, res) => {
 
   // definizione funzione per prendere i dati, firmarli e inviarli al reader
@@ -42,21 +43,21 @@ export const checkAccess = async (req, res) => {
     // 1. recupera la card
     const card = await cardModel.getCardByUID(card_uid);
     if (!card || !card.active) {
-      await logModel.createLog(null, reader_uid, false, "Card non valida o inattiva");
+      await logModel.createLog(null, reader_uid, false, "Accesso negato: Card non valida o inattiva");
       return sendSignedResponse(401, { access: false, message: "Card non valida" });
     }
 
     // 2. recupera il reader
     const reader = await readerModel.getReaderByUID(reader_uid);
     if (!reader || !reader.is_active) {
-      await logModel.createLog(card.id, null, false, "Reader non valido o inattivo");
+      await logModel.createLog(card.id, null, false, "Accesso negato: Reader non valido o inattivo");
       return sendSignedResponse(401, { access: false, message: "Reader non valido" });
     }
 
     // 3. verifica firma (autenticità del reader)
     const validSignature = verifySignature({ card_uid, reader_uid }, signature, reader.public_key);
     if (!validSignature) {
-      await logModel.createLog(card.id, reader.id, false, "Firma non valida");
+      await logModel.createLog(card.id, reader.id, false, "Accesso negato: Firma non valida");
       return sendSignedResponse(401, { access: false, message: "Firma non valida" });
     }
 
@@ -69,12 +70,12 @@ export const checkAccess = async (req, res) => {
     );
 
     if (!booking) {
-      await logModel.createLog(card.id, reader.id, false, "Nessuna prenotazione attiva");
+      await logModel.createLog(card.id, reader.id, false, "Accesso negato: Nessuna prenotazione");
       return sendSignedResponse(403, { access: false, message: "Nessuna prenotazione valida ora" });
     }
 
     // 5. Accesso consentito
-    await logModel.createLog(card.id, reader.id, true, "Accesso autorizzato");
+    await logModel.createLog(card.id, reader.id, true, "Accesso consentito: Prenotazione valida");
     return sendSignedResponse(200, { access: true, message: "Accesso autorizzato" });
 
   } catch (err) {

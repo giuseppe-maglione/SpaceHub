@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiGet } from "../api";
 import { useAuth } from "../context/AuthContext";
-import "./style/Home.css";
+import "../style/Home.css";
 
 export default function Home() {
     const nav = useNavigate();
@@ -12,20 +12,20 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
 
-    // Helper per ottenere la stringa "YYYY-MM-DDTHH:MM" in ora locale
+    // helper per ottenere la stringa "YYYY-MM-DDTHH:MM" dell'ora locale
     const getLocalISOString = (date) => {
         const offset = date.getTimezoneOffset() * 60000;
         const localDate = new Date(date.getTime() - offset);
         return localDate.toISOString().slice(0, 16);
     };
 
-    // Al caricamento, cerca le aule disponibili ADESSO
+    // al caricamento, cerca le aule disponibili in questo momento
     useEffect(() => {
         async function fetchNow() {
             setLoading(true);
             try {
                 const now = new Date();
-                const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000); // +1 ora
+                const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);  // +1 ora
 
                 const startStr = getLocalISOString(now);
                 const endStr = getLocalISOString(oneHourLater);
@@ -35,7 +35,7 @@ export default function Home() {
                 );
 
                 const fetchedRooms = res.rooms || [];
-                // Ordina per ID
+                // ordina per ID
                 fetchedRooms.sort((a, b) => a.id - b.id);
                 setRooms(fetchedRooms);
 
@@ -48,12 +48,12 @@ export default function Home() {
 
         fetchNow();
 
-        // Timer per aggiornare l'orologio visualizzato ogni minuto
+        // timer per aggiornare l'orologio visualizzato ogni minuto
         const timer = setInterval(() => setCurrentTime(new Date()), 60000);
         return () => clearInterval(timer);
     }, []);
 
-    // Gestione click su "Prenota Subito"
+    // gestione click su "Prenota Subito"
     const handleQuickBook = (roomId) => {
         const now = new Date();
         const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
@@ -67,7 +67,7 @@ export default function Home() {
         });
     };
 
-    // Helper colori card
+    // helper colori card
     const getCardGradient = (index) => {
         const gradients = [
             "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
@@ -93,7 +93,7 @@ export default function Home() {
 
             <div className="home-container">
                 
-                {/* QUICK ACTIONS - Rimosso Mappa Aule */}
+                {/* QUICK ACTIONS */}
                 <div className="actions-grid">
                     <div className="action-card" onClick={() => nav("/rooms")}>
                         <span className="action-icon">🔍</span>

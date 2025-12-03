@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./style/Navbar.css"; // Importa il CSS
+import "../style/Navbar.css";
 
 export default function Navbar() {
     const { user, logout } = useAuth();
@@ -12,7 +12,7 @@ export default function Navbar() {
                 StudySpace 📚
             </Link>
 
-            {/* 2. LINK CENTRALI DI NAVIGAZIONE */}
+            {/* LINK CENTRALI DI NAVIGAZIONE */}
             <div className="nav-links">
                 <Link to="/" className="nav-link">Home</Link>
                 <Link to="/rooms" className="nav-link">Aule</Link>
@@ -24,11 +24,11 @@ export default function Navbar() {
                 )}
             </div>
 
-            {/* 3. AZIONI UTENTE (DESTRA) */}
+            {/* AZIONI UTENTE (DESTRA) */}
             <div className="nav-auth">
                 {user ? (
                     <>
-                        {/* Bottone per creare prenotazione in evidenza */}
+                        {/* bottone per creare prenotazione in evidenza */}
                         <Link to="/rooms" className="btn-primary">
                             + Nuova Prenotazione
                         </Link>

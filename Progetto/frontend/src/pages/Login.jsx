@@ -1,9 +1,10 @@
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Aggiunto Link per la registrazione
-import "./style/Auth.css"; // Importa il CSS
+import { useNavigate, Link } from "react-router-dom";       // hook per reindirizzare l'utente ad un altra pagina dopo il login
+import "../style/Auth.css";
 
 export default function Login() {
+    // inizializzazione degli stati
     const { login } = useAuth();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -12,6 +13,7 @@ export default function Login() {
     
     const navigate = useNavigate();
 
+    // funzione che gestisce ciò che accade quando si preme il pulsante "Accedi"
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
@@ -21,6 +23,7 @@ export default function Login() {
         if (res.error) {
             setError(res.error);
         } else {
+            // reindirizzata alla home
             navigate("/");
         }
     }
@@ -33,7 +36,7 @@ export default function Login() {
                 
                 <form onSubmit={handleSubmit} className="auth-form">
                     
-                    {/* Campo Username */}
+                    {/* input username */}
                     <div className="input-group">
                         <label htmlFor="username">Username</label>
                         <input 
@@ -46,7 +49,7 @@ export default function Login() {
                         />
                     </div>
                     
-                    {/* Campo Password */}
+                    {/* campo password */}
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
                         <input 
@@ -62,7 +65,7 @@ export default function Login() {
                     
                     <button type="submit" className="auth-button">Accedi</button>
 
-                    {/* Messaggio Errore */}
+                    {/* messaggio errore */}
                     {error && (
                         <div className="auth-error">
                             ⚠️ {error}
@@ -70,7 +73,7 @@ export default function Login() {
                     )}
                 </form>
 
-                {/* Footer con link alla registrazione */}
+                {/* footer con link alla registrazione */}
                 <div className="auth-footer">
                     Non hai un account? <Link to="/register" className="auth-link">Registrati qui</Link>
                 </div>

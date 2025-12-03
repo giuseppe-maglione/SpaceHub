@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiGet, apiDelete } from "../api";
-import "./style/MyBookings.css"; // Importa il CSS
+import "../style/MyBookings.css";
 
 export default function MyBookings() {
     const [list, setList] = useState([]);
     
-    // Gestione Feedback (Messaggi verdi/rossi)
+    // messaggi di feedback (verdi -> successo / rosso -> fallimento)
     const [feedback, setFeedback] = useState({ msg: "", type: "" });
 
+    // funzione per prelevare tutte le prenotazioni dell'utente
     async function load() {
         try {
             const res = await apiGet("/api/prenotazioni");
-            // Ordiniamo le prenotazioni dalla più recente alla più vecchia
+            // le prenotazioni sono ordinate dalla più recente alla più vecchia
             const bookings = res.bookings || [];
             bookings.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
             
             setList(bookings);
         } catch (err) {
             console.error(err);
-            setList([]);
+            setList([]);        // in caso di errore, reset della lista
         }
     }
 
@@ -35,7 +36,7 @@ export default function MyBookings() {
                  load(); 
                  setFeedback({ msg: "Prenotazione eliminata con successo!", type: "success" });
                  
-                 // Rimuovi messaggio dopo 3 secondi
+                 // rimuovi messaggio dopo 3 secondi
                  setTimeout(() => setFeedback({ msg: "", type: "" }), 3000);
             }
         } catch (err) {
@@ -46,7 +47,7 @@ export default function MyBookings() {
 
     useEffect(() => { load(); }, []);
 
-    // Helper per colori gradienti (Uguale a Rooms, ma per coerenza visiva)
+    // helper per colori gradienti (Uguale a Rooms, ma per coerenza visiva)
     const getCardGradient = (index) => {
         const gradients = [
             "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", // Deep Purple
@@ -57,7 +58,7 @@ export default function MyBookings() {
         return gradients[index % gradients.length];
     };
 
-    // Helper per formattare la data in modo carino
+    // helper per formattare la data in modo carino per il frontend
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('it-IT', { 
@@ -82,7 +83,7 @@ export default function MyBookings() {
 
             <div className="bookings-container">
 
-                {/* Feedback Message */}
+                {/* feedback Message */}
                 {feedback.msg && (
                     <div className={`feedback-msg ${feedback.type}`}>
                         {feedback.msg}
@@ -100,7 +101,7 @@ export default function MyBookings() {
                     {list.map((b, index) => (
                         <div key={b.id} className="booking-card">
                             
-                            {/* Header Colorato */}
+                            {/* header Colorato */}
                             <div className="booking-header" style={{ background: getCardGradient(index) }}>
                                 <div>
                                     <h3 className="booking-room-title">Aula {b.room_id}</h3> {/* Qui potresti mettere il nome stanza se il backend lo manda */}
@@ -108,7 +109,7 @@ export default function MyBookings() {
                                 <span className="booking-id">#{b.id}</span>
                             </div>
 
-                            {/* Body con Dettagli */}
+                            {/* body con dettagli sulla prenotazione */}
                             <div className="booking-body">
                                 <div className="info-row">
                                     <span className="icon">🗓️</span>
@@ -122,7 +123,7 @@ export default function MyBookings() {
                                 </div>
                             </div>
 
-                            {/* Azioni */}
+                            {/* azioni (modifica, elimina) */}
                             <div className="booking-actions">
                                 <Link to={`/edit-booking/${b.id}`} className="btn-action btn-edit">
                                     ✏️ Modifica

@@ -1,13 +1,12 @@
 import { bookingModel } from "../models/bookingModel.js";
 import { roomModel } from "../models/roomModel.js";
 
-// Helper per convertire JS Date in formato MariaDB 'YYYY-MM-DD HH:MM:SS'
-// Assicura che la data sia in UTC per coerenza con la config del DB
+// helper per convertire la data JS in formato compatibile con mariadb 'YYYY-MM-DD HH:MM:SS'
 const toSqlDate = (dateObj) => {
     return dateObj.toISOString().slice(0, 19).replace('T', ' ');
 };
 
-// 1. LISTA AULE DISPONIBILI
+// --- LISTA AULE DISPONIBILI
 export const listRooms = async (req, res) => {
   try {
     const { start, end } = req.query;
@@ -19,7 +18,7 @@ export const listRooms = async (req, res) => {
     const startTime = new Date(start);
     const endTime = new Date(end);
 
-    // Validazione Date
+    // validazione Date
     if (Number.isNaN(startTime.getTime()) || Number.isNaN(endTime.getTime())) {
       return res.status(400).json({ error: "Formato data/ora non valido. Usa ISO 8601." });
     }
@@ -28,16 +27,15 @@ export const listRooms = async (req, res) => {
       return res.status(400).json({ error: "L'orario di inizio deve essere precedente alla fine." });
     }
 
-    // Conversione per SQL
+    // conversione per mariadb
     const sqlStart = toSqlDate(startTime);
     const sqlEnd = toSqlDate(endTime);
 
-    // Recupera stanze
+    // recupera stanze
     const rooms = await roomModel.getAllRooms();
 
     const result = [];
     for (const r of rooms) {
-      // Passiamo le stringhe SQL al model
       const overlap = await bookingModel.hasOverlap(r.id, sqlStart, sqlEnd);
       result.push({
         id: r.id,
@@ -61,7 +59,7 @@ export const listRooms = async (req, res) => {
 };
 
 
-// 2. RECUPERA SINGOLA PRENOTAZIONE
+// --- RECUPERA SINGOLA PRENOTAZIONE UTENTE
 export const getUserBookingById = async (req, res) => {
     try {
         const bookingId = req.params.id;
@@ -85,7 +83,7 @@ export const getUserBookingById = async (req, res) => {
 };
 
 
-// 3. LISTA PRENOTAZIONI UTENTE
+// --- RECUPERA TUTTE LE PRENOTAZIONI UTENTE
 export const getUserBookings = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -98,7 +96,7 @@ export const getUserBookings = async (req, res) => {
 };
 
 
-// 4. CREA PRENOTAZIONE
+// --- CREA PRENOTAZIONE
 export const createBooking = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -108,7 +106,7 @@ export const createBooking = async (req, res) => {
             return res.status(400).json({ error: "Dati mancanti" });
         }
 
-        // Conversione e Validazione Date
+        // conversione e validazione date
         const start = new Date(startTime);
         const end = new Date(endTime);
 
@@ -120,17 +118,17 @@ export const createBooking = async (req, res) => {
             return res.status(400).json({ error: "La data di inizio deve essere prima della fine" });
         }
 
-        // Formattazione per MariaDB
+        // formattazione per mariadb
         const sqlStart = toSqlDate(start);
         const sqlEnd = toSqlDate(end);
 
-        // Check esistenza stanza
+        // check esistenza stanza
         const room = await roomModel.getRoomById(roomId);
         if (!room) {
             return res.status(404).json({ error: "Stanza inesistente" });
         }
 
-        // Check sovrapposizione (Usando date SQL)
+        // check sovrapposizione
         const overlap = await bookingModel.hasOverlap(roomId, sqlStart, sqlEnd);
         if (overlap) {
             return res.status(400).json({
@@ -138,7 +136,7 @@ export const createBooking = async (req, res) => {
             });
         }
 
-        // Creazione (Usando date SQL)
+        // creazione
         const booking = await bookingModel.createBooking(
             userId,
             roomId,
@@ -158,7 +156,7 @@ export const createBooking = async (req, res) => {
 };
 
 
-// 5. MODIFICA PRENOTAZIONE
+// --- MODIFICA PRENOTAZIONE
 export const updateBooking = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -169,7 +167,7 @@ export const updateBooking = async (req, res) => {
             return res.status(400).json({ error: "Dati mancanti" });
         }
 
-        // Conversione e Validazione Date
+        // conversione e validazione date
         const start = new Date(startTime);
         const end = new Date(endTime);
 
@@ -181,42 +179,41 @@ export const updateBooking = async (req, res) => {
              return res.status(400).json({ error: "La data di inizio deve essere prima della fine" });
         }
 
-        // Formattazione per MariaDB
+        // formattazione per mariadb
         const sqlStart = toSqlDate(start);
         const sqlEnd = toSqlDate(end);
 
-        // Check esistenza prenotazione
+        // check esistenza prenotazione
         const booking = await bookingModel.getBookingById(bookingId);
         if (!booking) {
             return res.status(404).json({ error: "Prenotazione non trovata" });
         }
 
-        // Check ownership
+        // check ownership
         if (booking.user_id !== userId) {
             return res.status(403).json({ error: "Non puoi modificare questa prenotazione" });
         }
 
-        // Check sovrapposizione
+        // check sovrapposizione
         const overlap = await bookingModel.hasOverlap(
             booking.room_id,
             sqlStart,
             sqlEnd
         );
 
-        // Se c’è sovrapposizione, dobbiamo capire se stiamo sovrapponendo noi stessi.
-        // Convertiamo le date del DB in stringhe SQL per confrontarle con i nuovi input
+        // se c’è sovrapposizione, dobbiamo capire se stiamo sovrapponendo noi stessi.
         const currentDbStart = toSqlDate(new Date(booking.start_time));
         const currentDbEnd = toSqlDate(new Date(booking.end_time));
 
-        // Logica: Se c'è overlap, MA i tempi richiesti sono IDENTICI a quelli attuali, allora OK (nessuna modifica reale di orario).
-        // Altrimenti, se i tempi cambiano e c'è overlap, allora ERRORE.
+        // logica: se c'è overlap, ma i tempi richiesti sono identici a quelli attuali, allora ok (nessuna modifica reale di orario).
+        // altrimenti, se i tempi cambiano e c'è overlap, allora errore.
         if (overlap && !(currentDbStart === sqlStart && currentDbEnd === sqlEnd)) {
             return res.status(400).json({
                 error: "Nuovo orario non disponibile, stanza occupata"
             });
         }
 
-        // Update (Usando date SQL)
+        // update
         await bookingModel.updateBooking(bookingId, sqlStart, sqlEnd);
 
         res.json({ message: "Prenotazione aggiornata correttamente" });
@@ -228,7 +225,7 @@ export const updateBooking = async (req, res) => {
 };
 
 
-// 6. ELIMINA PRENOTAZIONE (soft delete → status='cancelled')
+// --- ELIMINA PRENOTAZIONE (soft delete → status='cancelled')
 export const deleteBooking = async (req, res) => {
     try {
         const userId = req.session.userId;
