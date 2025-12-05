@@ -1,241 +1,258 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Janus from '../utils/janus'; 
-import adapter from 'webrtc-adapter';
+import React, { useEffect, useRef, useState } from "react";
+import Janus from "../utils/janus";
+import adapter from "webrtc-adapter";
 
-const SERVER_URL = "wss://localhost:8989"; 
+const SERVER_URL = "wss://localhost:8989";
 
 const VideoClassroom = ({ role = "student", roomId }) => {
-    // Gestione ID Stanza: usa quello passato dalle props o un fallback
-    const activeRoomId = roomId ? parseInt(roomId) : 200; 
-    
-    const [janusInstance, setJanusInstance] = useState(null);
-    const [status, setStatus] = useState("Disconnesso");
-    const [isSharing, setIsSharing] = useState(false); // Stato per sapere se stiamo trasmettendo
-    
-    const videoRef = useRef(null); 
-    // Ref fondamentale per accedere al plugin senza aspettare i render di React
-    const pluginRef = useRef(null);  
+    const room = roomId ? parseInt(roomId) : 200;
+
+    const videoRef = useRef(null);
+    const janusRef = useRef(null);
+    const pluginRef = useRef(null);
+
+    const localTracksRef = useRef([]);
+
+    const [status, setStatus] = useState("Inizializzazione...");
+    const [isSharing, setIsSharing] = useState(false);
 
     useEffect(() => {
-        // Inizializzazione Janus alla creazione del componente
         Janus.init({
             debug: "all",
-            callback: () => {
-                if (!Janus.isWebrtcSupported()) {
-                    alert("Il tuo browser non supporta WebRTC!");
-                    return;
-                }
-                connectToJanus();
-            }
+            callback: () => startJanus()
         });
 
-        // Cleanup quando chiudi il componente
         return () => {
-            if (janusInstance) {
-                janusInstance.destroy();
-            }
+            stopSharing();
+            if (janusRef.current) janusRef.current.destroy();
         };
     }, []);
 
-    const connectToJanus = () => {
+    // -------------------------------------------------------------
+    //  AVVIO JANUS
+    // -------------------------------------------------------------
+    const startJanus = () => {
         const janus = new Janus({
             server: SERVER_URL,
             success: () => {
-                setJanusInstance(janus);
-                attachToVideoRoom(janus);
+                janusRef.current = janus;
+                attachPlugin();
             },
-            error: (error) => {
-                console.error("Errore Janus:", error);
-                setStatus("Errore connessione server");
-            },
-            destroyed: () => {
-                setStatus("Distrutto");
+            error: (err) => console.error("Janus error", err),
+        });
+    };
+
+    // -------------------------------------------------------------
+    //  GESTIONE ROOM (EXISTS + CREATE)
+    // -------------------------------------------------------------
+    const ensureRoomExists = (plugin, room, callback) => {
+        const check = {
+            request: "exists",
+            room: room
+        };
+
+        plugin.send({
+            message: check,
+            success: (result) => {
+                if (result.exists) {
+                    console.log("ROOM ESISTE:", room);
+                    callback();
+                } else {
+                    console.log("ROOM NON ESISTE, CREAZIONE:", room);
+
+                    const create = {
+                        request: "create",
+                        room: room,
+                        permanent: false,
+                        description: `Lezione ${room}`,
+                        publishers: 1,
+                        is_private: false
+                    };
+
+                    plugin.send({
+                        message: create,
+                        success: () => {
+                            console.log("ROOM CREATA:", room);
+                            callback();
+                        }
+                    });
+                }
             }
         });
     };
 
-    const attachToVideoRoom = (janus) => {
-        janus.attach({
+    // -------------------------------------------------------------
+    //  ATTACCO PLUGIN
+    // -------------------------------------------------------------
+    const attachPlugin = () => {
+        janusRef.current.attach({
             plugin: "janus.plugin.videoroom",
             opaqueId: "videoroom-" + Janus.randomString(12),
+
             success: (plugin) => {
-                // Salviamo il plugin nella Ref immediatamente
-                pluginRef.current = plugin; 
-                setStatus("Plugin collegato! Entro nella stanza...");
-                
-                if (role === 'teacher') {
-                    registerAsPublisher(plugin);
-                } else {
-                    registerAsSubscriber(plugin);
-                }
+                pluginRef.current = plugin;
+
+                // ➜ Prima verifico/creo la ROOM
+                ensureRoomExists(plugin, room, () => {
+                    console.log("ROOM READY — procedo con join");
+
+                    if (role === "teacher") joinAsPublisher(plugin);
+                    else joinAsSubscriber(plugin);
+                });
             },
-            error: (error) => {
-                console.error("Errore attach:", error);
-                setStatus("Errore plugin");
-            },
+
+            error: (err) => console.error("Plugin attach error", err),
+
             onmessage: (msg, jsep) => {
-                const event = msg["videoroom"];
-                
-                if (event) {
-                    if (event === "joined") {
-                        setStatus(`Entrato nella stanza ${activeRoomId} come ${role}`);
-                        // NOTA: Non avviamo più publishScreen qui automaticamente
-                        // per evitare il blocco del browser. Aspettiamo il click.
-                    } 
-                    else if (event === "event") {
-                        // Logica futura per gestire studenti che entrano
-                        if (msg["publishers"]) {
-                            console.log("Publisher attivi:", msg["publishers"]);
-                        }
-                    }
+                if (jsep) plugin.handleRemoteJsep({ jsep });
+
+                if (msg.videoroom === "joined") {
+                    setStatus(role === "teacher" ? "Docente connesso" : "Studente connesso");
                 }
 
-                // Gestione handshake SDP (necessaria sempre)
-                if (jsep) {
-                    if (pluginRef.current) {
-                        pluginRef.current.handleRemoteJsep({ jsep: jsep });
-                    }
+                if (msg.publishers && role === "student") {
+                    const publisher = msg.publishers[0];
+                    subscribeToPublisher(plugin, publisher.id);
                 }
             },
-            onlocalstream: (stream) => {
-                // Visualizza il MIO schermo (Docente)
-                if (role === 'teacher' && videoRef.current) {
-                    Janus.attachMediaStream(videoRef.current, stream);
-                }
-            },
+
             onremotestream: (stream) => {
-                // Visualizza lo schermo del DOCENTE (Studente)
-                if (role === 'student' && videoRef.current) {
-                    Janus.attachMediaStream(videoRef.current, stream);
+                if (role === "student" && videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.play();
                 }
             }
         });
     };
 
-    // --- AZIONI ---
-
-    const registerAsPublisher = (plugin) => {
-        const register = {
-            request: "join",
-            room: activeRoomId,
-            ptype: "publisher",
-            display: "Docente"
-        };
-        plugin.send({ message: register });
+    // -------------------------------------------------------------
+    //  JOIN TEACHER
+    // -------------------------------------------------------------
+    const joinAsPublisher = (plugin) => {
+        plugin.send({
+            message: {
+                request: "join",
+                ptype: "publisher",
+                room,
+                display: "Docente"
+            }
+        });
     };
 
-    const registerAsSubscriber = (plugin) => {
-        const register = {
-            request: "join",
-            room: activeRoomId,
-            ptype: "publisher", // Join generico
-            display: "Studente"
-        };
-        plugin.send({ message: register });
+    // -------------------------------------------------------------
+    //  JOIN STUDENTE
+    // -------------------------------------------------------------
+    const joinAsSubscriber = (plugin) => {
+        plugin.send({
+            message: {
+                request: "join",
+                ptype: "subscriber",
+                room,
+                display: "Studente"
+            }
+        });
     };
 
-    // Funzione chiamata dal bottone manuale
-    const handleStartSharing = () => {
-        if (pluginRef.current) {
-            publishScreen(pluginRef.current);
-        } else {
-            alert("Connessione in corso... riprova tra un secondo.");
+    // -------------------------------------------------------------
+    //  SUBSCRIBE
+    // -------------------------------------------------------------
+    const subscribeToPublisher = (plugin, feedId) => {
+        plugin.send({
+            message: {
+                request: "join",
+                ptype: "subscriber",
+                room,
+                feed: feedId
+            }
+        });
+    };
+
+    // -------------------------------------------------------------
+    //  SCREEN + MICROPHONE CAPTURE
+    // -------------------------------------------------------------
+    const handleStartSharing = async () => {
+        try {
+            const screen = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            const combined = new MediaStream();
+            screen.getTracks().forEach(t => combined.addTrack(t));
+            mic.getTracks().forEach(t => combined.addTrack(t));
+
+            localTracksRef.current = [...screen.getTracks(), ...mic.getTracks()];
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = combined;
+                videoRef.current.muted = true;
+                videoRef.current.play();
+            }
+
+            publishToJanus(combined);
+        } catch (err) {
+            console.error("Capture error:", err);
         }
     };
 
-    const publishScreen = (plugin) => {
-        plugin.createOffer({
-            // Richiede condivisione schermo
-            media: { video: "screen", audioSend: true, videoRecv: false },
-            success: (jsep) => {
-                const publish = {
-                    request: "configure",
-                    audio: true,
-                    video: true
-                };
-                plugin.send({ message: publish, jsep: jsep });
-                setIsSharing(true); // Aggiorniamo l'interfaccia
+    // -------------------------------------------------------------
+    //  PUBBLICAZIONE STREAM
+    // -------------------------------------------------------------
+    const publishToJanus = (stream) => {
+        pluginRef.current.createOffer({
+            stream,
+            media: {
+                videoSend: true,
+                audioSend: true,
+                videoRecv: false,
+                audioRecv: false
             },
-            error: (error) => {
-                console.error("Errore WebRTC:", error);
-                // Gestione caso utente annulla condivisione
-                if (error.name === "NotAllowedError") {
-                    alert("Hai annullato la condivisione.");
-                } else {
-                    alert("Errore cattura schermo: " + error.message);
-                }
-            }
+            success: (jsep) => {
+                pluginRef.current.send({
+                    message: { request: "configure", audio: true, video: true },
+                    jsep
+                });
+
+                setIsSharing(true);
+            },
+            error: (err) => console.error("createOffer error:", err)
         });
     };
 
-    // --- RENDER ---
+    // -------------------------------------------------------------
+    //  STOP SHARING
+    // -------------------------------------------------------------
+    const stopSharing = () => {
+        localTracksRef.current.forEach(t => t.stop());
+        localTracksRef.current = [];
+        setIsSharing(false);
+    };
 
+    // -------------------------------------------------------------
+    //  UI
+    // -------------------------------------------------------------
     return (
-        <div style={{ 
-            padding: 10, 
-            border: '1px solid #ddd', 
-            borderRadius: '8px',
-            background: '#000', 
-            color: '#fff',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-        }}>
-            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 5}}>
-                <h4 style={{margin: 0}}>
-                    {role === 'teacher' ? "🎥 Tuo Schermo (In onda)" : "📺 Diretta Aula"}
-                </h4>
-                <small style={{color: '#aaa'}}>
-                    {status} | Room: {activeRoomId}
-                </small>
-            </div>
-            
-            <div className="video-container" style={{
-                marginTop: 10, 
-                position: 'relative', 
-                minHeight: '300px', 
-                background: '#222',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <video 
-                    ref={videoRef} 
-                    autoPlay 
-                    playsInline 
-                    muted={role === 'teacher'} // Importante: mutati se sei tu a parlare
-                    style={{ width: '100%', maxHeight: '500px', display: 'block' }}
-                />
+        <div style={{ padding: 10, color: "#fff", background: "#000" }}>
+            <h3>{role === "teacher" ? "Docente" : "Studente"} – Aula {room}</h3>
+            <small>{status}</small>
 
-                {/* BOTTONE OVERLAY PER IL DOCENTE */}
-                {role === 'teacher' && !isSharing && (
-                    <div style={{
-                        position: 'absolute', 
-                        top: 0, left: 0, right: 0, bottom: 0, 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: 'rgba(0,0,0,0.6)',
-                        zIndex: 10
-                    }}>
-                        <button 
-                            onClick={handleStartSharing}
-                            style={{
-                                padding: '15px 30px', 
-                                fontSize: '16px', 
-                                cursor: 'pointer',
-                                background: '#2ecc71',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '50px',
-                                fontWeight: 'bold',
-                                boxShadow: '0 4px 15px rgba(46, 204, 113, 0.4)',
-                                transition: 'transform 0.2s'
-                            }}
-                            onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                        >
-                            🚀 Clicca per Condividere Schermo
-                        </button>
-                    </div>
-                )}
-            </div>
+            <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                controls
+                style={{ width: "100%", background: "#222" }}
+            />
+
+            {role === "teacher" && !isSharing && (
+                <button onClick={handleStartSharing} style={{ marginTop: 10 }}>
+                    Avvia Condivisione
+                </button>
+            )}
+
+            {role === "teacher" && isSharing && (
+                <button onClick={stopSharing} style={{ marginTop: 10 }}>
+                    Interrompi
+                </button>
+            )}
         </div>
     );
 };
