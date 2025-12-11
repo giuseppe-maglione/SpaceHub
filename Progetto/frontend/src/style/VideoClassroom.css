@@ -1,44 +1,63 @@
 /* VideoClassroom.css */
 
 .vc-container {
-    padding: 20px;
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    color: #333;
-    background-color: #f4f6f8;
-    min-height: 100vh;
+    width: 100%;
+    /* Rimosso min-height: 100vh che causava l'allungamento eccessivo */
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding: 10px; 
+    background-color: transparent; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #0a1540; /* Blu scuro coerente */
 }
 
 .vc-card {
     background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    padding: 30px;
+    border-radius: 20px; /* Arrotondamento coerente con Auth/Rooms */
+    /* Ombra bluastra leggera */
+    box-shadow: 0 10px 30px rgba(102, 166, 255, 0.1);
     max-width: 500px;
     width: 100%;
-    margin-top: 10vh;
+    margin-top: 0; 
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.vc-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.6rem; 
+    font-weight: 800;
+    /* Gradiente 3: Viola -> Azzurro per il titolo */
+    background: linear-gradient(90deg, #a18cd1 0%, #a1c4fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .vc-header {
-    margin-bottom: 20px;
-    padding: 10px 20px;
+    margin-bottom: 15px;
+    padding: 8px 20px;
     background: white;
     border-radius: 50px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(102, 166, 255, 0.1);
+    display: inline-block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid #f0f4f8;
 }
 
 .vc-status-dot {
-    font-weight: bold;
-    margin-left: 10px;
+    font-weight: 800;
+    margin-left: 8px;
 }
 
 .vc-video-container {
-    width: 90%;
+    width: 100%;
     max-width: 1000px;
-    margin: 20px 0;
+    margin: 15px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,51 +65,85 @@
 }
 
 .vc-video-elem {
-    max-width: 800px;
-    border-radius: 8px;
+    width: 100%; 
+    border-radius: 16px;
     background: black;
     margin-bottom: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .vc-controls {
-    margin-top: 20px;
+    margin-top: 10px;
     background: white;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    /* Ombra coerente */
+    box-shadow: 0 10px 25px rgba(102, 166, 255, 0.1);
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(102, 166, 255, 0.1);
 }
 
-.vc-pulse {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    font-weight: bold;
-    color: #28a745;
-    animation: pulse 2s infinite;
+.vc-screen-active {
+    /* Colore primario #3154FC */
+    color: #3154FC;
+    font-weight: 700;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 /* Stili Bottoni */
 .vc-btn {
     color: white;
     border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 12px;
     cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.1s;
+    font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%; 
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 .vc-btn:active {
     transform: scale(0.98);
 }
 
-.vc-btn-primary { background-color: #007bff; }
-.vc-btn-purple { background-color: #6610f2; }
-.vc-btn-red { background-color: #dc3545; }
-.vc-btn-green { background-color: #28a745; }
+/* Bottone Join: Gradiente 1 (Blu -> Ciano) */
+.vc-btn-primary { 
+    background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
+    box-shadow: 0 4px 15px rgba(102, 166, 255, 0.4);
+}
 
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
+.vc-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 166, 255, 0.6);
+}
+
+/* Bottone Mute (Rosso) */
+.vc-btn-red { 
+    background-color: #fff0f3;
+    color: #d63384;
+    border: 1px solid #fbc2eb;
+}
+
+.vc-btn-red:hover {
+    background-color: #ffe0e9;
+}
+
+/* Bottone Attivo (Verde) */
+.vc-btn-green { 
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.vc-btn-green:hover {
+    background-color: #dcedc8;
 }

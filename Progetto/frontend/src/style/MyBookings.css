@@ -2,27 +2,30 @@
 
 .bookings-page {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+  /* Sfondo coerente con Auth e Home */
+  background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   padding-bottom: 40px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Banner (identico a Rooms) */
+/* Banner */
 .bookings-banner {
-  background: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%); /* Viola/Rosa */
+  /* Gradiente 3: Viola -> Azzurro */
+  background: linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%);
   padding: 40px 20px;
   text-align: center;
   color: white;
-  box-shadow: 0 4px 15px rgba(161, 140, 209, 0.3);
+  /* Ombra viola/blu coerente */
+  box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
   margin-bottom: 40px;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 30px 30px; /* Arrotondamento aumentato */
 }
 
 .bookings-banner h1 {
   margin: 0;
   font-size: 2rem;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  font-weight: 800; /* Più bold */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .bookings-container {
@@ -36,15 +39,24 @@
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 12px;
-  color: white;
   font-weight: bold;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   animation: fadeIn 0.3s ease;
+  border: 1px solid transparent;
 }
 
-.feedback-msg.success { background-color: #28a745; }
-.feedback-msg.error { background-color: #dc3545; }
+.feedback-msg.success { 
+  background-color: #e8f5e9; 
+  color: #2e7d32; 
+  border-color: #c8e6c9;
+}
+
+.feedback-msg.error { 
+  background-color: #fff0f3; 
+  color: #d63384; 
+  border-color: #fbc2eb;
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -53,9 +65,13 @@
 
 .no-bookings {
   text-align: center;
-  color: #777;
+  color: #667; /* Grigio bluastro */
   font-size: 1.1rem;
   margin-top: 50px;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(102, 166, 255, 0.05);
 }
 
 /* Grid Layout */
@@ -70,17 +86,21 @@
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
+  /* Ombra leggera bluastra */
+  box-shadow: 0 10px 20px rgba(102, 166, 255, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(0,0,0,0.02);
 }
 
 .booking-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 30px rgba(102, 166, 255, 0.15);
 }
 
+/* Nota: Il background gradient viene spesso iniettato inline dal JS, 
+   ma qui definiamo struttura e testo */
 .booking-header {
   height: 80px;
   padding: 20px;
@@ -92,20 +112,23 @@
 
 .booking-room-title {
   font-size: 1.4rem;
-  font-weight: bold;
+  font-weight: 800;
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .booking-id {
   font-size: 0.8rem;
-  opacity: 0.8;
-  background: rgba(0,0,0,0.1);
-  padding: 4px 8px;
-  border-radius: 10px;
+  opacity: 0.9;
+  background: rgba(255,255,255,0.2); /* Semi-trasparente bianco */
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
 }
 
 .booking-body {
-  padding: 20px;
+  padding: 25px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -115,27 +138,32 @@
 .info-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #555;
   font-size: 1rem;
+  font-weight: 500;
 }
 
-.icon { font-size: 1.2rem; }
+.icon { 
+  font-size: 1.2rem; 
+  filter: grayscale(0.2); /* Leggermente desaturate per eleganza */
+}
 
 /* Actions Footer */
 .booking-actions {
   padding: 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #f4f7fc;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  background-color: #fafbff; /* Sfondo footer leggerissimo */
 }
 
 .btn-action {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -144,23 +172,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .btn-edit {
-  background-color: #f0f4f8;
-  color: #333;
+  /* Azzurro chiaro per coerenza col tema */
+  background-color: #eef2ff;
+  color: #3154FC; /* Colore primario */
 }
 
 .btn-edit:hover {
-  background-color: #e1e8ed;
+  background-color: #e0e7ff;
+  transform: translateY(-1px);
 }
 
 .btn-delete {
-  background-color: #ffebee;
-  color: #d32f2f;
+  /* Rosa chiaro per coerenza col tema "errore/danger" */
+  background-color: #fff0f3;
+  color: #d63384;
 }
 
 .btn-delete:hover {
-  background-color: #ffcdd2;
+  background-color: #ffe0e9;
+  transform: translateY(-1px);
 }

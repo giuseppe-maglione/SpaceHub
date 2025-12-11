@@ -67,13 +67,13 @@ export default function Home() {
         });
     };
 
-    // helper colori card
+    // helper per cambiare i colori alle prenotazioni
     const getCardGradient = (index) => {
         const gradients = [
-            "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-            "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
-            "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
-            "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)"
+            "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+            "linear-gradient(135deg, #9baee7 0%, #83b5fe 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)"
         ];
         return gradients[index % gradients.length];
     };
@@ -84,7 +84,7 @@ export default function Home() {
             {/* HERO SECTION */}
             <div className="home-hero">
                 <h1 className="hero-title">
-                    {user ? `Ciao, ${user.username}! 👋` : "Benvenuto in StudySpace 📚"}
+                    {user ? `Ciao, ${user.username}!` : "Benvenuto in StudySpace 📚"}
                 </h1>
                 <p className="hero-subtitle">
                     Trova e prenota la tua aula studio ideale in pochi secondi.

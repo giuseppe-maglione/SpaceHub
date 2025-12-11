@@ -56,13 +56,13 @@ export default function MyBookings() {
 
     useEffect(() => { load(); }, []);
 
-    // helper per colori gradienti (Uguale a Rooms, ma per coerenza visiva)
+    // helper per cambiare i colori alle prenotazioni
     const getCardGradient = (index) => {
         const gradients = [
-            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", // Deep Purple
-            "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)", // Blue Indigo
-            "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)", // Pink
-            "linear-gradient(135deg, #f6d365 0%, #fda085 100%)" // Orange
+            "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+            "linear-gradient(135deg, #9baee7 0%, #83b5fe 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)"
         ];
         return gradients[index % gradients.length];
     };
@@ -147,7 +147,7 @@ export default function MyBookings() {
                                             </div>
 
                                             <div className="info-row">
-                                                <span className="icon">⏰</span>
+                                                <span className="icon">🕒</span>
                                                 <span>
                                                     {formatTime(b.start_time)} ➔ {formatTime(b.end_time)}
                                                 </span>
@@ -185,7 +185,7 @@ export default function MyBookings() {
                                                             width: "100%"
                                                         }}
                                                     >
-                                                        🎥 Avvia Lezione
+                                                        🎥 Avvia Riunione
                                                     </button>
                                                 )}
 

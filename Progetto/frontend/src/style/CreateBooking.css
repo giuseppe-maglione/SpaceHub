@@ -5,7 +5,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to bottom right, #fdfbfb, #ebedee);
+  /* Sfondo coerente con Auth e Home */
+  background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
 }
@@ -14,9 +15,10 @@
   background: white;
   padding: 40px;
   width: 100%;
-  max-width: 500px; /* Un po' più largo del login */
+  max-width: 500px; 
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  /* Ombra bluastra leggera */
+  box-shadow: 0 10px 30px rgba(102, 166, 255, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -29,7 +31,8 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%); /* Verde/Azzurro */
+  /* Gradiente 1: Ciano -> Blu */
+  background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
 }
 
 .form-title {
@@ -42,7 +45,8 @@
 }
 
 .form-title span {
-  background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%);
+  /* Gradiente 3: Viola -> Azzurro per il testo in evidenza */
+  background: linear-gradient(90deg, #a18cd1 0%, #a1c4fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,44 +72,49 @@
 .form-input {
   padding: 12px 15px;
   border-radius: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #dae1e7;
   font-size: 1rem;
   outline: none;
   transition: all 0.3s;
-  background-color: #f9f9f9;
+  background-color: #f9fbff; /* Sfondo leggermente azzurrato */
   font-family: inherit;
 }
 
 .form-input:focus {
-  border-color: #8fd3f4;
+  /* Focus blu */
+  border-color: #66a6ff;
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(143, 211, 244, 0.2);
+  box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.15);
 }
 
 /* Input Readonly (quando ID stanza è precompilato) */
 .form-input[readonly] {
-  background-color: #e9ecef;
-  color: #666;
+  background-color: #eef2f5;
+  color: #777;
   cursor: not-allowed;
+  border-color: #e1e4e8;
 }
 
 .submit-btn {
   margin-top: 10px;
   padding: 14px;
-  background: linear-gradient(90deg, #84fab0 0%, #8fd3f4 100%); /* Verde acqua */
-  color: white; /* O #333 se preferisci contrasto */
+  /* Gradiente 1: Blu -> Ciano */
+  background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
+  color: white; 
   border: none;
   border-radius: 12px;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(132, 250, 176, 0.4);
-  transition: transform 0.2s;
+  /* Ombra coerente */
+  box-shadow: 0 4px 15px rgba(102, 166, 255, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .submit-btn:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 166, 255, 0.6);
 }
 
 .submit-btn:disabled {
@@ -127,12 +136,14 @@
 }
 
 .msg-box.error {
-  background-color: #ffebee;
-  color: #d32f2f;
-  border: 1px solid #ffcdd2;
+  /* Mantengo il rosso per l'errore semantico, ma leggermente più freddo */
+  background-color: #fff0f3;
+  color: #d63384;
+  border: 1px solid #fbc2eb; /* Bordo rosato (Gradiente 4) */
 }
 
 .msg-box.success {
+  /* Verde semantico per successo (non usare blu qui o confonde) */
   background-color: #e8f5e9;
   color: #2e7d32;
   border: 1px solid #c8e6c9;

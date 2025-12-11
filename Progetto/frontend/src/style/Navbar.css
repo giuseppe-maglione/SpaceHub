@@ -6,13 +6,14 @@
   align-items: center;
   padding: 0 40px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px); /* Effetto vetro */
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.90); /* Leggermente più trasparente */
+  backdrop-filter: blur(12px); /* Effetto vetro potenziato */
+  -webkit-backdrop-filter: blur(12px);
+  /* Ombra bluastra molto leggera invece che nera */
+  box-shadow: 0 4px 20px rgba(49, 84, 252, 0.08);
   position: sticky;
   top: 0;
-  z-index: 1000; /* Assicura che stia sopra tutto */
+  z-index: 1000; 
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -21,9 +22,10 @@
   font-size: 1.8rem;
   font-weight: 800;
   text-decoration: none;
-  background: linear-gradient(90deg, #FF9A8B 0%, #FF6A88 100%);
+  /* Gradiente 3: Viola -> Blu per il logo */
+  background: linear-gradient(90deg, #3154FC 0%, #a18cd1 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* Testo gradiente */
+  -webkit-text-fill-color: transparent; 
   letter-spacing: -0.5px;
 }
 
@@ -44,7 +46,8 @@
 }
 
 .nav-link:hover {
-  color: #FF6A88;
+  /* Colore primario all'hover */
+  color: #3154FC;
 }
 
 /* Effetto sottolineatura animata */
@@ -55,8 +58,9 @@
   height: 2px;
   bottom: -4px;
   left: 0;
-  background-color: #FF6A88;
-  transition: width 0.3s;
+  /* Linea blu */
+  background-color: #3154FC;
+  transition: width 0.3s ease-in-out;
 }
 
 .nav-link:hover::after {
@@ -72,45 +76,49 @@
 
 /* Pulsante Primario (Crea Prenotazione, Register) */
 .btn-primary {
-  background: linear-gradient(90deg, #FFA07A 0%, #FF6347 100%);
+  /* Gradiente 1: Blu -> Ciano */
+  background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
   color: white;
-  padding: 10px 20px;
+  padding: 10px 24px;
   border-radius: 25px;
   text-decoration: none;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(255, 99, 71, 0.3);
+  /* Ombra colorata coerente */
+  box-shadow: 0 4px 10px rgba(102, 166, 255, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(255, 99, 71, 0.4);
+  box-shadow: 0 6px 15px rgba(102, 166, 255, 0.5);
 }
 
 /* Pulsante Secondario (Login) */
 .btn-secondary {
-  color: #FF6A88;
+  /* Colore primario */
+  color: #3154FC;
   text-decoration: none;
   font-weight: bold;
-  padding: 8px 15px;
-  border: 2px solid rgba(255, 106, 136, 0.2);
+  padding: 8px 18px;
+  border: 2px solid rgba(49, 84, 252, 0.15); /* Bordo sottile blu */
   border-radius: 25px;
   transition: all 0.3s;
   background: transparent;
 }
 
 .btn-secondary:hover {
-  border-color: #FF6A88;
-  background: rgba(255, 106, 136, 0.05);
+  border-color: #3154FC;
+  background: rgba(49, 84, 252, 0.05); /* Sfondo leggerissimo al passaggio */
 }
 
 /* Pulsante Logout */
 .btn-logout {
   background: transparent;
-  border: 1px solid #ddd;
+  border: 1px solid #e1e4e8;
   padding: 8px 15px;
   border-radius: 20px;
   color: #666;
@@ -123,15 +131,15 @@
 }
 
 .btn-logout:hover {
-  background: #f5f5f5;
-  color: #333;
-  border-color: #ccc;
+  background: #fff0f3; /* Rosso chiarissimo */
+  color: #d63384; /* Rosa scuro */
+  border-color: #fbc2eb;
 }
 
 /* User Greeting */
 .user-greeting {
   font-size: 0.9rem;
-  color: #888;
+  color: #6c757d;
   margin-right: 10px;
   font-weight: 500;
 }

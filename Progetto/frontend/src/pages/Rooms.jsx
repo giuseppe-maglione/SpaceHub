@@ -67,13 +67,13 @@ export default function Rooms() {
         });
     };
 
-    // helper per i colori
+    // helper per cambiare i colori alle prenotazioni
     const getCardGradient = (index) => {
         const gradients = [
-            "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)", // Blue
-            "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)", // Purple
-            "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)", // Green
-            "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" // Pink
+            "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+            "linear-gradient(135deg, #9baee7 0%, #83b5fe 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%)",
+            "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)"
         ];
         return gradients[index % gradients.length];
     };
@@ -137,7 +137,7 @@ export default function Rooms() {
 
             {/* --- RESULTS SECTION --- */}
             <div className="results-container">
-                <h3 className="results-title">✨ Aule Disponibili</h3>
+                <h3 className="results-title">Aule disponibili</h3>
 
                 {searched && rooms.length === 0 && !error && (
                     <p className="no-result">Nessuna aula trovata per questo orario.</p>
