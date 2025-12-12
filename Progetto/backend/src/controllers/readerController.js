@@ -1,11 +1,17 @@
 import fs from 'fs';
-import path from 'path';
 import { cardModel } from "../models/cardModel.js";
 import { readerModel } from "../models/readerModel.js";
 import { bookingModel } from "../models/bookingModel.js";
 import { logModel } from "../models/logModel.js";
 import { verifySignature, signData } from "../utils/cryptoUtils.js";
 
+// --- CONFIGURAZIONE DOTENV
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '..', '.env') });
 // caricamento della chiave privata del server
 const SERVER_PRIVATE_KEY_PATH = process.env.SERVER_PRIVATE_KEY_PATH || path.resolve('keys', 'server_private.pem');
 let SERVER_PRIVATE_KEY;
@@ -74,7 +80,7 @@ export const checkAccess = async (req, res) => {
       return sendSignedResponse(403, { access: false, message: "Nessuna prenotazione valida ora" });
     }
 
-    // 5. Accesso consentito
+    // 5. accesso consentito
     await logModel.createLog(card.id, reader.id, true, "Accesso consentito: Prenotazione valida");
     return sendSignedResponse(200, { access: true, message: "Accesso autorizzato" });
 

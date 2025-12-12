@@ -1,42 +1,35 @@
 /* Auth.css */
 
-/* Sfondo intera pagina */
 .auth-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Sfondo leggermente più freddo per coerenza */
   background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
 }
 
-/* Card Centrale */
 .auth-card {
   background: white;
   padding: 40px;
   width: 100%;
-  max-width: 400px; /* Larghezza massima */
+  max-width: 400px;
   border-radius: 20px;
-  /* Ombra bluastra molto leggera */
   box-shadow: 0 10px 25px rgba(102, 166, 255, 0.1); 
   text-align: center;
 }
 
-/* Titolo con Gradiente */
 .auth-title {
   margin-top: 0;
   margin-bottom: 30px;
   font-size: 2rem;
   font-weight: 800;
-  /* Utilizzo del 3° gradiente (Viola -> Blu) per il titolo */
   background: linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* Testo colorato */
+  -webkit-text-fill-color: transparent; 
 }
 
-/* Gruppi di Input */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -63,24 +56,20 @@
   font-size: 1rem;
   outline: none;
   transition: all 0.3s;
-  background-color: #f9fbff; /* Sfondo input leggermente azzurrato */
+  background-color: #f9fbff; 
   box-sizing: border-box; 
 }
 
 .auth-input:focus {
-  /* Focus col colore blu intermedio */
   border-color: #66a6ff;
   box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.15);
   background-color: white;
 }
 
-/* Bottone */
 .auth-button {
   width: 100%;
   padding: 12px;
   margin-top: 20px; 
-  /* Utilizzo del 1° gradiente (Ciano -> Blu) per il bottone */
-  /* Ho invertito leggermente i colori per garantire leggibilità del testo bianco */
   background: linear-gradient(135deg, #66a6ff 0%, #89f7fe 100%);
   color: white;
   border: none;
@@ -88,7 +77,6 @@
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  /* Ombra coerente col bottone */
   box-shadow: 0 4px 15px rgba(102, 166, 255, 0.4);
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -102,19 +90,16 @@
   transform: translateY(0);
 }
 
-/* Messaggio di Errore */
 .auth-error {
-  /* Errore leggermente violaceo per coerenza, pur mantenendo la semantica di errore */
   background-color: #fff0f3;
   color: #d63384; 
   padding: 10px;
   border-radius: 8px;
   margin-top: 15px;
   font-size: 0.9rem;
-  border: 1px solid #fbc2eb; /* Bordo preso dal 4° gradiente (Rosa) */
+  border: 1px solid #fbc2eb; /
 }
 
-/* Link in fondo */
 .auth-footer {
   margin-top: 25px;
   font-size: 0.9rem;
@@ -122,7 +107,6 @@
 }
 
 .auth-link {
-  /* Colore Blu/Viola per i link */
   color: #66a6ff;
   text-decoration: none;
   font-weight: bold;

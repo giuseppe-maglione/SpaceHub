@@ -2,29 +2,25 @@
 
 .bookings-page {
   min-height: 100vh;
-  /* Sfondo coerente con Auth e Home */
   background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   padding-bottom: 40px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Banner */
 .bookings-banner {
-  /* Gradiente 3: Viola -> Azzurro */
   background: linear-gradient(135deg, #a18cd1 0%, #a1c4fd 100%);
   padding: 40px 20px;
   text-align: center;
   color: white;
-  /* Ombra viola/blu coerente */
   box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
   margin-bottom: 40px;
-  border-radius: 0 0 30px 30px; /* Arrotondamento aumentato */
+  border-radius: 0 0 30px 30px; 
 }
 
 .bookings-banner h1 {
   margin: 0;
   font-size: 2rem;
-  font-weight: 800; /* Più bold */
+  font-weight: 800; 
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -34,7 +30,6 @@
   padding: 0 20px;
 }
 
-/* Feedback Message (Toast) */
 .feedback-msg {
   padding: 15px;
   margin-bottom: 20px;
@@ -65,7 +60,7 @@
 
 .no-bookings {
   text-align: center;
-  color: #667; /* Grigio bluastro */
+  color: #667; 
   font-size: 1.1rem;
   margin-top: 50px;
   background: white;
@@ -74,19 +69,16 @@
   box-shadow: 0 5px 15px rgba(102, 166, 255, 0.05);
 }
 
-/* Grid Layout */
 .bookings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
 }
 
-/* Card Styles */
 .booking-card {
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  /* Ombra leggera bluastra */
   box-shadow: 0 10px 20px rgba(102, 166, 255, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
@@ -99,8 +91,6 @@
   box-shadow: 0 15px 30px rgba(102, 166, 255, 0.15);
 }
 
-/* Nota: Il background gradient viene spesso iniettato inline dal JS, 
-   ma qui definiamo struttura e testo */
 .booking-header {
   height: 80px;
   padding: 20px;
@@ -120,7 +110,7 @@
 .booking-id {
   font-size: 0.8rem;
   opacity: 0.9;
-  background: rgba(255,255,255,0.2); /* Semi-trasparente bianco */
+  background: rgba(255,255,255,0.2); 
   padding: 4px 10px;
   border-radius: 12px;
   font-weight: 600;
@@ -146,16 +136,15 @@
 
 .icon { 
   font-size: 1.2rem; 
-  filter: grayscale(0.2); /* Leggermente desaturate per eleganza */
+  filter: grayscale(0.2); 
 }
 
-/* Actions Footer */
 .booking-actions {
   padding: 20px;
   border-top: 1px solid #f4f7fc;
   display: flex;
   gap: 12px;
-  background-color: #fafbff; /* Sfondo footer leggerissimo */
+  background-color: #fafbff; 
 }
 
 .btn-action {
@@ -176,9 +165,8 @@
 }
 
 .btn-edit {
-  /* Azzurro chiaro per coerenza col tema */
   background-color: #eef2ff;
-  color: #3154FC; /* Colore primario */
+  color: #3154FC; 
 }
 
 .btn-edit:hover {
@@ -187,7 +175,6 @@
 }
 
 .btn-delete {
-  /* Rosa chiaro per coerenza col tema "errore/danger" */
   background-color: #fff0f3;
   color: #d63384;
 }

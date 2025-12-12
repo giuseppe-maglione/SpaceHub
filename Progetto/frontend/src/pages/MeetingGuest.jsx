@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import VideoClassroom from '../components/VideoClassroom';
 
 const MeetingGuest = () => {
-    // Legge l'id dalla rotta /meeting/:roomId
+    // legge l'id dalla rotta /live/room/:roomId
     const { roomId } = useParams();
 
     return (

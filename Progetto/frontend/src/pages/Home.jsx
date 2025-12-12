@@ -84,10 +84,10 @@ export default function Home() {
             {/* HERO SECTION */}
             <div className="home-hero">
                 <h1 className="hero-title">
-                    {user ? `Ciao, ${user.username}!` : "Benvenuto in StudySpace 📚"}
+                    {user ? `Ciao, ${user.username}!` : "Benvenuto in SpaceHub 💬"}
                 </h1>
                 <p className="hero-subtitle">
-                    Trova e prenota la tua aula studio ideale in pochi secondi.
+                    Trova e prenota la tua aula ideale in pochi secondi
                 </p>
             </div>
 
@@ -98,13 +98,13 @@ export default function Home() {
                     <div className="action-card" onClick={() => nav("/rooms")}>
                         <span className="action-icon">🔍</span>
                         <h3 className="action-title">Cerca Aule</h3>
-                        <p className="action-desc">Filtra per data e orario specifico.</p>
+                        <p className="action-desc">Filtra per data e orario specifico</p>
                     </div>
 
                     <div className="action-card" onClick={() => nav(user ? "/my-bookings" : "/login")}>
                         <span className="action-icon">📅</span>
                         <h3 className="action-title">Le mie Prenotazioni</h3>
-                        <p className="action-desc">Gestisci le tue sessioni di studio.</p>
+                        <p className="action-desc">Gestisci le tue prenotazioni e avvia la riunione</p>
                     </div>
                 </div>
 

@@ -129,7 +129,7 @@ export default function MyBookings() {
                                     {/* se stream è attiva, mostra il video */}
                                     {streamingId === b.id ? (
                                         <div className="streaming-active-area" style={{ marginBottom: "15px" }}>
-                                            {/* HOST = TEACHER */}
+                                            {/* host */}
                                             <VideoClassroom role="host" roomId={b.id} />
                                             <button
                                                 onClick={() => setStreamingId(null)}
@@ -153,7 +153,7 @@ export default function MyBookings() {
                                                 </span>
                                             </div>
 
-                                            {/* bottone per avviare lo streaming (solo se attiva ORA) */}
+                                            {/* bottone per avviare lo streaming (solo se attiva in questo momento) */}
                                             <div style={{ marginTop: "15px", borderTop: "1px solid #eee", paddingTop: "10px" }}>
 
                                                 {!active && (
@@ -166,7 +166,7 @@ export default function MyBookings() {
                                                             width: "100%"
                                                         }}
                                                     >
-                                                        ⛔ Lezione non attiva
+                                                        ⛔ Riunione non attiva
                                                     </button>
                                                 )}
 

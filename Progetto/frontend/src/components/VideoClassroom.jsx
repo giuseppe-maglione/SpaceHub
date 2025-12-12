@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Janus from '../utils/janus';
+import { apiPost } from '../api';
 import '../style/VideoClassroom.css'; 
 
 const VideoClassroom = ({ role, roomId }) => {
@@ -59,8 +60,33 @@ const VideoClassroom = ({ role, roomId }) => {
         };
     }, []);
 
-    const handleJoin = () => {
+    // funzione per gestire il click "Avvia/Partecipa"
+    const handleJoin = async () => {
         setHasJoined(true);
+
+        // se sono HOST, chiedo al backend di creare la stanza su Janus
+        if (role === 'host') {
+            try {
+                setStatus("Creazione stanza sul server...");
+                // chiamata all'API del backend
+                const res = await apiPost(`/api/crea-riunione/${MY_ROOM_ID}`);
+                
+                // gestione errori restituiti dal backend
+                if (res.error) {
+                    setError("Errore server: " + res.error);
+                    return;
+                }
+                
+                console.log("✅ Backend: Stanza creata/verificata con successo");
+
+            } catch (err) {
+                console.error(err);
+                setError("Impossibile contattare il server per creare la riunione.");
+                return;
+            }
+        }
+
+        // se sono Guest o se l'Host ha creato la stanza con successo, avviamo WebRTC
         setStatus("Connessione in corso...");
         startJanus();
     };
@@ -74,6 +100,7 @@ const VideoClassroom = ({ role, roomId }) => {
                 roomHandleRef.current = pluginHandle;
 
                 // definizione della richiesta di join
+                // nota: la creazione della stanza viene fatta dal backend
                 const joinRequest = { 
                     request: "join", 
                     room: MY_ROOM_ID, 
@@ -81,33 +108,8 @@ const VideoClassroom = ({ role, roomId }) => {
                     display: "Host" 
                 };
 
-                // prima di fare join, controlliamo se la room esiste già
-                // in caso contrario, la creiamo
-                pluginHandle.send({
-                    message: {
-                        request: "create",
-                        room: MY_ROOM_ID,
-                        permanent: false,
-                        description: "Riunione " + MY_ROOM_ID,
-                        publishers: 6,
-                        is_private: false
-                    },
-                    success: function(result) {
-                        console.log("✅ Stanza creata o verificata:", result);
-                        // stanza creata, si può fare join
-                        pluginHandle.send({ message: joinRequest });
-                    },
-                    error: function(error) {
-                        // se la stanza esite, possiamo fare join
-                        if (error && error.error_code === 486) {
-                            console.log("⚠️ La stanza esiste già, entro comunque...");
-                            pluginHandle.send({ message: joinRequest });
-                        } else {
-                            console.error("❌ Errore creazione stanza:", error);
-                            setError("Impossibile creare la stanza: " + error);
-                        }
-                    }
-                });
+                // join nella stanza creata
+                pluginHandle.send({ message: joinRequest });
             },
             error: (err) => setError("Errore plugin: " + err),
             onmessage: (msg, jsep) => {
@@ -266,7 +268,7 @@ const VideoClassroom = ({ role, roomId }) => {
     return (
         <div className="vc-container">
             <div className="vc-header">
-                <h2>{role === 'host' ? 'Trasmissione' : 'Aula Studente'}</h2>
+                <h2>{role === 'host' ? 'Trasmissione' : 'Partecipazione'}</h2>
                 <span className="vc-status-dot" style={{ color: error ? 'red' : 'green' }}>
                     ● {error || status}
                 </span>

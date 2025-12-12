@@ -9,7 +9,7 @@ export default function Navbar() {
         <nav className="navbar">
             {/* 1. LOGO */}
             <Link to="/" className="nav-logo">
-                StudySpace 📚
+                SpaceHub 💬
             </Link>
 
             {/* LINK CENTRALI DI NAVIGAZIONE */}

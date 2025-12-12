@@ -83,7 +83,7 @@ export default function Rooms() {
             
             {/* --- HEADER BANNER --- */}
             <div className="rooms-banner">
-                <h1>🔍 Trova la tua Aula Studio</h1>
+                <h1>🔍 Trova la tua Aula</h1>
             </div>
 
             {/* --- SEARCH SECTION --- */}

@@ -5,7 +5,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Sfondo coerente con Auth e Home */
   background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
@@ -17,13 +16,11 @@
   width: 100%;
   max-width: 500px; 
   border-radius: 20px;
-  /* Ombra bluastra leggera */
   box-shadow: 0 10px 30px rgba(102, 166, 255, 0.1);
   position: relative;
   overflow: hidden;
 }
 
-/* Barra decorativa in alto */
 .create-card::before {
   content: "";
   position: absolute;
@@ -31,7 +28,6 @@
   left: 0;
   width: 100%;
   height: 6px;
-  /* Gradiente 1: Ciano -> Blu */
   background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
 }
 
@@ -45,7 +41,6 @@
 }
 
 .form-title span {
-  /* Gradiente 3: Viola -> Azzurro per il testo in evidenza */
   background: linear-gradient(90deg, #a18cd1 0%, #a1c4fd 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -76,7 +71,7 @@
   font-size: 1rem;
   outline: none;
   transition: all 0.3s;
-  background-color: #f9fbff; /* Sfondo leggermente azzurrato */
+  background-color: #f9fbff; 
   font-family: inherit;
 }
 
@@ -87,7 +82,6 @@
   box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.15);
 }
 
-/* Input Readonly (quando ID stanza è precompilato) */
 .form-input[readonly] {
   background-color: #eef2f5;
   color: #777;
@@ -98,7 +92,6 @@
 .submit-btn {
   margin-top: 10px;
   padding: 14px;
-  /* Gradiente 1: Blu -> Ciano */
   background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
   color: white; 
   border: none;
@@ -106,7 +99,6 @@
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  /* Ombra coerente */
   box-shadow: 0 4px 15px rgba(102, 166, 255, 0.4);
   transition: transform 0.2s, box-shadow 0.2s;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -124,7 +116,6 @@
   transform: none;
 }
 
-/* Messaggi di Feedback */
 .msg-box {
   margin-top: 20px;
   padding: 12px;
@@ -136,14 +127,12 @@
 }
 
 .msg-box.error {
-  /* Mantengo il rosso per l'errore semantico, ma leggermente più freddo */
   background-color: #fff0f3;
   color: #d63384;
-  border: 1px solid #fbc2eb; /* Bordo rosato (Gradiente 4) */
+  border: 1px solid #fbc2eb; 
 }
 
 .msg-box.success {
-  /* Verde semantico per successo (non usare blu qui o confonde) */
   background-color: #e8f5e9;
   color: #2e7d32;
   border: 1px solid #c8e6c9;

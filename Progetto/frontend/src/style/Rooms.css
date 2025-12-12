@@ -2,22 +2,19 @@
 
 .rooms-page {
   min-height: 100vh;
-  /* Sfondo freddo coerente */
   background: linear-gradient(to bottom right, #f4f7fc, #eef2f3);
   padding-bottom: 40px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .rooms-banner {
-  /* Gradiente 3: Viola -> Azzurro */
   background: linear-gradient(90deg, #a18cd1 0%, #a1c4fd 100%);
   padding: 40px 20px;
   text-align: center;
   color: white;
-  /* Ombra viola/blu */
   box-shadow: 0 4px 15px rgba(161, 140, 209, 0.4);
-  margin-bottom: -30px; /* Sovrapposizione alla search bar */
-  border-radius: 0 0 30px 30px; /* Arrotondamento più moderno */
+  margin-bottom: -30px; 
+  border-radius: 0 0 30px 30px; 
 }
 
 .rooms-banner h1 {
@@ -35,7 +32,6 @@
   margin: 0 auto;
   padding: 30px;
   border-radius: 20px;
-  /* Ombra bluastra leggera */
   box-shadow: 0 10px 30px rgba(102, 166, 255, 0.1);
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -44,7 +40,7 @@
 .search-title {
   margin-top: 0;
   margin-bottom: 20px;
-  color: #0a1540; /* Blu scuro */
+  color: #0a1540; 
   font-size: 1.2rem;
   font-weight: 700;
 }
@@ -82,7 +78,6 @@
 }
 
 .input-field:focus {
-  /* Focus blu */
   border-color: #66a6ff;
   box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.15);
   background-color: white;
@@ -90,7 +85,6 @@
 
 .search-button {
   flex: 0 0 auto;
-  /* Gradiente 1: Blu -> Ciano */
   background: linear-gradient(90deg, #66a6ff 0%, #89f7fe 100%);
   color: white;
   border: none;
@@ -99,7 +93,6 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  /* Ombra coerente */
   box-shadow: 0 4px 15px rgba(102, 166, 255, 0.4);
   transition: transform 0.2s, box-shadow 0.2s;
   height: 46px; 
@@ -116,13 +109,12 @@
 }
 
 .error-msg {
-  color: #d63384; /* Rosa scuro per errore (freddo) */
+  color: #d63384; 
   font-weight: bold;
   margin-top: 15px;
   text-align: center;
 }
 
-/* Results Grid */
 .results-container {
   max-width: 1200px;
   margin: 50px auto 0;
@@ -152,12 +144,11 @@
   gap: 25px;
 }
 
-/* Card Styles */
 .room-card {
   background: white;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 20px rgba(102, 166, 255, 0.08); /* Ombra bluastra */
+  box-shadow: 0 10px 20px rgba(102, 166, 255, 0.08); 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -176,7 +167,6 @@
   flex-direction: column;
   justify-content: space-between;
   color: white;
-  /* Nota: il background gradient viene di solito iniettato inline da React */
 }
 
 .badge-container {
@@ -195,7 +185,7 @@
 }
 
 .badge.success { color: #28a745; }
-.badge.error { color: #d63384; } /* Rosso rosato */
+.badge.error { color: #d63384; } 
 
 .card-room-code {
   margin: 0;
@@ -231,7 +221,6 @@
   margin-top: auto;
   width: 100%;
   padding: 12px;
-  /* Colore Primario #3154FC */
   background: #3154FC;
   color: white;
   border: none;
@@ -242,7 +231,7 @@
 }
 
 .book-button:hover {
-  background: #1527cf; /* Tonalità più scura */
+  background: #1527cf; 
   transform: translateY(-1px);
 }
 

@@ -1,3 +1,6 @@
+// disabilita il controllo SSL per i certificati self-signed
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 import express from "express";
 import session from "express-session";
 import path from "path";
@@ -50,10 +53,12 @@ app.use(express.static(buildPath));
 import bookingsRoutes from "./src/routes/bookingsRoutes.js";
 import readerRoutes from "./src/routes/readerRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
+import meetingsRoutes from "./src/routes/meetingsRoutes.js";
 
 bookingsRoutes(app);
 readerRoutes(app);
 authRoutes(app);
+meetingsRoutes(app);
 
 app.get("/", (req, res) => {
     res.sendFile(path.resolve(buildPath, "index.html"));    // routing for index.html
